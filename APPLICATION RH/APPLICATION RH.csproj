@@ -10797,6 +10797,7 @@
     <Content Include="assets\libs\waypoints\testem.json" />
     <Content Include="WebForm1.aspx" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="new page.aspx" />
     <Content Include="personnel\AjouterEmploye.aspx" />
     <Content Include="personnel\EditEmployee.aspx" />
     <Content Include="personnel\ListeEmployes.aspx" />
@@ -10877,6 +10878,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="new page.aspx.cs">
+      <DependentUpon>new page.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="new page.aspx.designer.cs">
+      <DependentUpon>new page.aspx</DependentUpon>
     </Compile>
     <Compile Include="personnel\AjouterEmploye.aspx.cs">
       <DependentUpon>AjouterEmploye.aspx</DependentUpon>
@@ -11056,6 +11064,7 @@
     <Folder Include="assets\libs\swiper\types\modules\" />
     <Folder Include="assets\libs\waypoints\src\" />
     <Folder Include="assets\libs\waypoints\test\" />
+    <Folder Include="test\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
