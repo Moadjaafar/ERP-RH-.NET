@@ -11056,6 +11056,7 @@
     <Folder Include="assets\libs\swiper\types\modules\" />
     <Folder Include="assets\libs\waypoints\src\" />
     <Folder Include="assets\libs\waypoints\test\" />
+    <Folder Include="test\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
