@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace APPLICATION_RH.pointagfix
+namespace APPLICATION_RH
 {
     public partial class WebForm1 : System.Web.UI.Page
     {

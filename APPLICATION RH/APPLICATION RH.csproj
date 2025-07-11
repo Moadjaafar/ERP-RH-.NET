@@ -10795,6 +10795,7 @@
     <Content Include="assets\libs\swiper\svelte\swiper-slide.svelte" />
     <Content Include="assets\libs\swiper\svelte\swiper.svelte" />
     <Content Include="assets\libs\waypoints\testem.json" />
+    <Content Include="WebForm1.aspx" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="personnel\AjouterEmploye.aspx" />
     <Content Include="personnel\EditEmployee.aspx" />
@@ -10809,7 +10810,6 @@
     <Content Include="pointage\TransfertAssignation.aspx" />
     <Content Include="pointagfix\AssignerEmployesPorts.aspx" />
     <Content Include="pointagfix\PointageEmployesPorts.aspx" />
-    <Content Include="pointagfix\WebForm1.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -10969,13 +10969,6 @@
     <Compile Include="pointagfix\PointageEmployesPorts.aspx.designer.cs">
       <DependentUpon>PointageEmployesPorts.aspx</DependentUpon>
     </Compile>
-    <Compile Include="pointagfix\WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="pointagfix\WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
@@ -10997,6 +10990,13 @@
     </Compile>
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm1.aspx.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm1.aspx.designer.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

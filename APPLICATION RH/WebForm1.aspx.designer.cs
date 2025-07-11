@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace APPLICATION_RH.pointagfix
+namespace APPLICATION_RH
 {
 
 
