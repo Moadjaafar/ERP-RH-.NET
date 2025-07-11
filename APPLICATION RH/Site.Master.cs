@@ -12,11 +12,11 @@ namespace APPLICATION_RH
         protected void Page_Load(object sender, EventArgs e)
         {
             //Check if user is authenticated
-            if (Session["EmployeId"] == null)
-                {
-                    Response.Redirect("~/connexion.aspx");
-                    return;
-                }
+            //if (Session["EmployeId"] == null)
+            //{
+            //    Response.Redirect("~/connexion.aspx");
+            //    return;
+            //}
 
             if (!IsPostBack)
             {

@@ -103,31 +103,58 @@ namespace APPLICATION_RH.pointagfix {
         protected global::System.Web.UI.WebControls.Panel pnlEmployeePointage;
         
         /// <summary>
-        /// litEmployeeCount control.
+        /// litPresentCount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litEmployeeCount;
+        protected global::System.Web.UI.WebControls.Literal litPresentCount;
         
         /// <summary>
-        /// btnRefreshEmployees control.
+        /// btnRefreshPresent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnRefreshEmployees;
+        protected global::System.Web.UI.WebControls.Button btnRefreshPresent;
         
         /// <summary>
-        /// gvEmployees control.
+        /// gvEmployeesPresent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvEmployees;
+        protected global::System.Web.UI.WebControls.GridView gvEmployeesPresent;
+        
+        /// <summary>
+        /// litAbsentCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litAbsentCount;
+        
+        /// <summary>
+        /// btnRefreshAbsent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRefreshAbsent;
+        
+        /// <summary>
+        /// gvEmployeesAbsent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvEmployeesAbsent;
         
         /// <summary>
         /// pnlCustomTime control.

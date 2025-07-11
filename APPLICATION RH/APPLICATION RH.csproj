@@ -10804,6 +10804,7 @@
     <Content Include="pointage\MonEquipe.aspx" />
     <Content Include="pointage\PointageEquipe.aspx" />
     <Content Include="pointage\PointageHeuresSupp.aspx" />
+    <Content Include="pointage\PointageProduction.aspx" />
     <Content Include="pointage\SupervisionPointage.aspx" />
     <Content Include="pointage\TransfertAssignation.aspx" />
     <Content Include="pointagfix\AssignerEmployesPorts.aspx" />
@@ -10931,6 +10932,13 @@
     </Compile>
     <Compile Include="pointage\PointageHeuresSupp.aspx.designer.cs">
       <DependentUpon>PointageHeuresSupp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pointage\PointageProduction.aspx.cs">
+      <DependentUpon>PointageProduction.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pointage\PointageProduction.aspx.designer.cs">
+      <DependentUpon>PointageProduction.aspx</DependentUpon>
     </Compile>
     <Compile Include="pointage\SupervisionPointage.aspx.cs">
       <DependentUpon>SupervisionPointage.aspx</DependentUpon>

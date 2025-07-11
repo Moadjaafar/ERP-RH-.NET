@@ -86,9 +86,21 @@ CREATE TABLE EMPLACEMENT (
 -- ============================================
  
 -- Drop existing EMPLOYE table and its constraints
-
+Delete EMPLOYE
 select * from EMPLOYE
 
+-- Add new column without unique constraint
+ALTER TABLE EMPLOYE ADD CinPassport_New NVARCHAR(50);
+
+-- Copy data from old column to new column
+UPDATE EMPLOYE SET CinPassport_New = CinPassport;
+
+-- Drop old column (this removes the unique constraint)
+ALTER TABLE EMPLOYE DROP COLUMN CinPassport;
+ALTER TABLE EMPLOYE DROP CONSTRAINT UQ__EMPLOYE__2671843421B389D0;
+
+-- Rename new column to original name
+EXEC sp_rename 'EMPLOYE.CinPassport_New', 'CinPassport', 'COLUMN';
 -- Create EMPLOYE table with all latest updates
 CREATE TABLE EMPLOYE (
     IdEmploye INT IDENTITY(1,1) PRIMARY KEY,
@@ -181,6 +193,15 @@ INSERT INTO SOCIETE (NomSociete, CodeSociete, Adresse, Telephone, Email, Registr
 ('GOLD SEA FISH', 'GSF', 'Zone Industrielle Dakhla', '+212-528-123456', 'contact@goldseafish.ma', 'RC12345', 'ICE001'),
 ('ERG CONSERVE', 'ERG', 'Zone Portuaire Dakhla', '+212-528-654321', 'info@ergconserve.ma', 'RC67890', 'ICE002'),
 ('PROTEIN AND OIL', 'PRO', 'Zone Industrielle Agadir', '+212-528-987654', 'contact@proteinoil.ma', 'RC54321', 'ICE003');
+INSERT INTO SOCIETE (NomSociete, CodeSociete, Adresse, Telephone, Email, RegistreCommerce, ICE) VALUES
+('BENIS PELAGIQUE', 'BPG', 'Zone Portuaire Dakhla', '+212-528-111333', 'contact@benispelagique.ma', 'RC11111', 'ICE004'),
+('ERG PACKAGING', 'EPK', 'Zone Industrielle Dakhla', '+212-528-222444', 'info@ergpackaging.ma', 'RC22222', 'ICE005'),
+('LOGISTIQUE & TRAITEMENT', 'LGT', 'Zone Logistique Dakhla', '+212-528-333555', 'contact@logistiquetraitement.ma', 'RC33333', 'ICE006'),
+('BENIS PECHE', 'BPC', 'Port de Pêche Dakhla', '+212-528-444666', 'info@benispeche.ma', 'RC44444', 'ICE007'),
+('ERG DELICE', 'EDL', 'Zone Commerciale Dakhla', '+212-528-555777', 'contact@ergdelice.ma', 'RC55555', 'ICE008'),
+('PAOI', 'PAO', 'Zone Industrielle Agadir', '+212-528-666888', 'info@paoi.ma', 'RC66666', 'ICE009');
+INSERT INTO SOCIETE (NomSociete, CodeSociete, Adresse, Telephone, Email, RegistreCommerce, ICE) VALUES
+('PROTEIN PELAGIC', 'PPG', 'Zone Portuaire Agadir', '+212-528-777999', 'contact@proteinpelagic.ma', 'RC77777', 'ICE010');
 
 -- Insert departments for GOLD SEA FISH (IdSociete = 1)
 INSERT INTO DEPARTEMENT (NomDepartement, CodeDepartement, Description, IdSociete) VALUES
@@ -742,3 +763,116 @@ BEGIN
     
     RETURN @Result;
 END;
+select * from EMPLOYE where Nom='jaafar'
+
+
+INSERT INTO EMPLOYE (
+    IdSociete, Matricule, Nom, Prenom, DateNaissance, LieuNaissance, 
+    CinPassport, Sexe, SituationFamiliale, NombreEnfants, Adresse, Telephone, 
+    Email, Nationalite, NiveauScolaire, Diplome, DateEmbauche, DateSortie, 
+    TypeContrat, TypeEmploye, IdTypeOuv, Rolle, PasswordHash, IdDepartement, 
+    IdService, IdCellule, IdFonction, IdEmplacement, Shift, SituationCNSS, 
+    NumeroCNSS, is_deleted, DateCreation, DateModification, ModifiePar
+) VALUES
+(2, '00005', 'LAMSOUGUER', 'WADIE', '1990-01-01', 'Dakhla', 'CN00005', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00005', 0, GETDATE(), NULL, 'System'),
+(2, '00030', 'MAZADI', 'ABDELMAJID', '1990-01-01', 'Dakhla', 'CN00030', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00030', 0, GETDATE(), NULL, 'System'),
+(2, '00033', 'GARMAZ', 'BRAHIM', '1990-01-01', 'Dakhla', 'CN00033', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00033', 0, GETDATE(), NULL, 'System'),
+(2, '00034', 'NAJAH', 'ZAHRA', '1990-01-01', 'Dakhla', 'CN00034', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00034', 0, GETDATE(), NULL, 'System'),
+(2, '00055', 'EL OUADI', 'LEILA', '1990-01-01', 'Dakhla', 'CN00055', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00055', 0, GETDATE(), NULL, 'System'),
+(2, '00059', 'AZHAF', 'LINA', '1990-01-01', 'Dakhla', 'CN00059', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00059', 0, GETDATE(), NULL, 'System'),
+(2, '00084', 'HGUIG', 'MOHAMED', '1990-01-01', 'Dakhla', 'CN00084', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00084', 0, GETDATE(), NULL, 'System'),
+(2, '00107', 'AGUSTIN', 'VASQUEZ', '1990-01-01', 'Dakhla', 'CN00107', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00107', 0, GETDATE(), NULL, 'System'),
+(2, '00109', 'ENNOURI', 'SALOUA', '1990-01-01', 'Dakhla', 'CN00109', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00109', 0, GETDATE(), NULL, 'System'),
+(2, '00117', 'CHAFIKI', 'ICAM', '1990-01-01', 'Dakhla', 'CN00117', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00117', 0, GETDATE(), NULL, 'System'),
+(2, '00147', 'DIAN', 'BRAHIM', '1990-01-01', 'Dakhla', 'CN00147', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00147', 0, GETDATE(), NULL, 'System'),
+(2, '00165', 'EL AYSSARI', 'FATIMA ZAHRA', '1990-01-01', 'Dakhla', 'CN00165', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00165', 0, GETDATE(), NULL, 'System'),
+(2, '00252', 'ELGHARBAOUI', 'MUSTAPHA', '1990-01-01', 'Dakhla', 'CN00252', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00252', 0, GETDATE(), NULL, 'System'),
+(2, '00272', 'BENRQUIA', 'NAWFAL', '1990-01-01', 'Dakhla', 'CN00272', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00272', 0, GETDATE(), NULL, 'System'),
+(2, '00735', 'EL HIHI', 'HADIA', '1990-01-01', 'Dakhla', 'CN00735', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00735', 0, GETDATE(), NULL, 'System'),
+(2, '01163', 'ELHOUARI', 'WIJDANE', '1990-01-01', 'Dakhla', 'CN01163', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01163', 0, GETDATE(), NULL, 'System'),
+(2, '01373', 'SAOUTANE', 'TARIQ', '1990-01-01', 'Dakhla', 'CN01373', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01373', 0, GETDATE(), NULL, 'System'),
+(2, '01376', 'DOUGHRI', 'HICHAM', '1990-01-01', 'Dakhla', 'CN01376', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01376', 0, GETDATE(), NULL, 'System'),
+(2, '01379', 'HAMMA', 'LIL MASSOUDA', '1990-01-01', 'Dakhla', 'CN01379', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01379', 0, GETDATE(), NULL, 'System'),
+(2, '01638', 'BOUCHIKHI', 'NAOUAL', '1990-01-01', 'Dakhla', 'CN01638', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01638', 0, GETDATE(), NULL, 'System'),
+(2, '01722', 'EL GHARIB', 'MOHAMED', '1990-01-01', 'Dakhla', 'CN01722', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01722', 0, GETDATE(), NULL, 'System'),
+(2, '01984', 'AGDACH', 'FARID', '1990-01-01', 'Dakhla', 'CN01984', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN01984', 0, GETDATE(), NULL, 'System'),
+(2, '02189', 'JAIL', 'ILYASS', '1990-01-01', 'Dakhla', 'CN02189', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN02189', 0, GETDATE(), NULL, 'System'),
+(2, '02321', 'BEN TAYBI ', 'AADNANE', '1990-01-01', 'Dakhla', 'CN02321', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN02321', 0, GETDATE(), NULL, 'System'),
+(2, '03048', 'RHOUNI BELLOUTI', 'IMANE', '1990-01-01', 'Dakhla', 'CN03048', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN03048', 0, GETDATE(), NULL, 'System'),
+(2, '03478', 'BASALLAM', 'ABDELAZIZ', '1990-01-01', 'Dakhla', 'CN03478', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN03478', 0, GETDATE(), NULL, 'System'),
+(2, '03743', 'WARD', 'HICHAM', '1990-01-01', 'Dakhla', 'CN03743', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN03743', 0, GETDATE(), NULL, 'System'),
+(2, '04097', 'ELANOUAR', 'SOUHAIL', '1990-01-01', 'Dakhla', 'CN04097', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04097', 0, GETDATE(), NULL, 'System'),
+(2, '04330', 'OULAABES', 'AYOUB', '1990-01-01', 'Dakhla', 'CN04330', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04330', 0, GETDATE(), NULL, 'System'),
+(2, '04332', 'AIT MANSOUR', 'RADOUANE', '1990-01-01', 'Dakhla', 'CN04332', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04332', 0, GETDATE(), NULL, 'System'),
+(2, '04333', 'IDERKOU', 'ABDELALI', '1990-01-01', 'Dakhla', 'CN04333', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04333', 0, GETDATE(), NULL, 'System'),
+(2, '04419', 'ABDOURABOU', 'FAISSAL', '1990-01-01', 'Dakhla', 'CN04419', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04419', 0, GETDATE(), NULL, 'System'),
+(2, '04538', 'KHAOULAN', 'SOUKAINA', '1990-01-01', 'Dakhla', 'CN04538', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04538', 0, GETDATE(), NULL, 'System'),
+(2, '04632', 'EL FRIYAKH', 'YASSINE', '1990-01-01', 'Dakhla', 'CN04632', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04632', 0, GETDATE(), NULL, 'System'),
+(2, '04663', 'WAHBI', 'YOUSSEF', '1990-01-01', 'Dakhla', 'CN04663', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04663', 0, GETDATE(), NULL, 'System'),
+(2, '04905', 'AMALOU', 'IBTIHAL', '1990-01-01', 'Dakhla', 'CN04905', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN04905', 0, GETDATE(), NULL, 'System'),
+(2, '05335', 'OUTTALEB', 'MARIAM', '1990-01-01', 'Dakhla', 'CN05335', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05335', 0, GETDATE(), NULL, 'System'),
+(2, '05378', 'RADID', 'SYRINE', '1990-01-01', 'Dakhla', 'CN05378', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05378', 0, GETDATE(), NULL, 'System'),
+(2, '05725', 'LHACHIMI', 'RACHID', '1990-01-01', 'Dakhla', 'CN05725', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05725', 0, GETDATE(), NULL, 'System'),
+(2, '05824', 'MOHAMMADI', 'NAJWA', '1990-01-01', 'Dakhla', 'CN05824', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05824', 0, GETDATE(), NULL, 'System'),
+(2, '05825', 'ELYAMOUNI', 'CHAIMAA', '1990-01-01', 'Dakhla', 'CN05825', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05825', 0, GETDATE(), NULL, 'System'),
+(2, '05922', 'ELGOURCH', 'MOHAMED', '1990-01-01', 'Dakhla', 'CN05922', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05922', 0, GETDATE(), NULL, 'System'),
+(2, '06018', 'CHAKIR', 'KHADIJA', '1990-01-01', 'Dakhla', 'CN06018', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06018', 0, GETDATE(), NULL, 'System'),
+(2, '06029', 'IDRATE', 'MOHAMED', '1990-01-01', 'Dakhla', 'CN06029', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06029', 0, GETDATE(), NULL, 'System'),
+(2, '06285', 'FIRAOUNI', 'LAHCEN', '1990-01-01', 'Dakhla', 'CN06285', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06285', 0, GETDATE(), NULL, 'System'),
+(2, '06333', 'BENLAHOUCINE', 'AHMED', '1990-01-01', 'Dakhla', 'CN06333', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06333', 0, GETDATE(), NULL, 'System'),
+(2, '06369', 'BOUHMALA', 'AYOUB', '1990-01-01', 'Dakhla', 'CN06369', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06369', 0, GETDATE(), NULL, 'System'),
+(2, '06442', 'JAAFAR', 'MOAD', '1990-01-01', 'Dakhla', 'CN06442', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06442', 0, GETDATE(), NULL, 'System');
+
+INSERT INTO EMPLOYE (
+    IdSociete, Matricule, Nom, Prenom, DateNaissance, LieuNaissance, 
+    CinPassport, Sexe, SituationFamiliale, NombreEnfants, Adresse, Telephone, 
+    Email, Nationalite, NiveauScolaire, Diplome, DateEmbauche, DateSortie, 
+    TypeContrat, TypeEmploye, IdTypeOuv, Rolle, PasswordHash, IdDepartement, 
+    IdService, IdCellule, IdFonction, IdEmplacement, Shift, SituationCNSS, 
+    NumeroCNSS, is_deleted, DateCreation, DateModification, ModifiePar
+) VALUES
+(1, '00005', 'CHAGDALI', 'MORCHID', '1990-01-01', 'Dakhla', 'CN00005', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00005', 0, GETDATE(), NULL, 'System'),
+(1, '00014', 'BOUZID', 'HOSSAM', '1990-01-01', 'Dakhla', 'CN00014', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00014', 0, GETDATE(), NULL, 'System'),
+(1, '00203', 'RAGI', 'CHAIMAE', '1990-01-01', 'Dakhla', 'CN00203', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00203', 0, GETDATE(), NULL, 'System'),
+(1, '00352', 'ID YASSINE', 'MUSTAPHA', '1990-01-01', 'Dakhla', 'CN00352', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00352', 0, GETDATE(), NULL, 'System'),
+(1, '00783', 'EL MESBAHY', 'BOUCHRA', '1990-01-01', 'Dakhla', 'CN00783', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00783', 0, GETDATE(), NULL, 'System'),
+(1, '02637', 'ISMAILI', 'ABDELAZIZ', '1990-01-01', 'Dakhla', 'CN02637', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN02637', 0, GETDATE(), NULL, 'System'),
+(1, '03295', 'MASOIR', 'SANAA', '1990-01-01', 'Dakhla', 'CN03295', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN03295', 0, GETDATE(), NULL, 'System'),
+(1, '05293', 'AMLIHA', 'HASSANIA', '1990-01-01', 'Dakhla', 'CN05293', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN05293', 0, GETDATE(), NULL, 'System'),
+(1, '06393', 'ACHDAMI', 'SOUKAINA', '1990-01-01', 'Dakhla', 'CN06393', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06393', 0, GETDATE(), NULL, 'System'),
+(1, '06394', 'EL ATMANI', 'ABDELILAH', '1990-01-01', 'Dakhla', 'CN06394', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06394', 0, GETDATE(), NULL, 'System'),
+(1, '06451', 'RAINE ', 'AYOUB ', '1990-01-01', 'Dakhla', 'CN06451', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06451', 0, GETDATE(), NULL, 'System'),
+(1, '07121', 'ELJEBRI', 'IMAD', '1990-01-01', 'Dakhla', 'CN07121', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN07121', 0, GETDATE(), NULL, 'System'),
+(1, '08219', 'DIACHI', 'AYMANE', '1990-01-01', 'Dakhla', 'CN08219', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN08219', 0, GETDATE(), NULL, 'System'),
+(4, '00008', 'BADRAOUI', 'SAFAE', '1990-01-01', 'Dakhla', 'CN00008', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00008', 0, GETDATE(), NULL, 'System'),
+(4, '00011', 'EL ASRI ', 'RACHID', '1990-01-01', 'Dakhla', 'CN00011', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00011', 0, GETDATE(), NULL, 'System'),
+(4, '00014', 'AMEGROUD', 'RACHID ', '1990-01-01', 'Dakhla', 'CN00014', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00014', 0, GETDATE(), NULL, 'System'),
+(4, '00017', 'LASRI ', 'ABDERAHMAN', '1990-01-01', 'Dakhla', 'CN00017', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00017', 0, GETDATE(), NULL, 'System'),
+(4, '00021', 'AARAB', 'ESSAID', '1990-01-01', 'Dakhla', 'CN00021', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00021', 0, GETDATE(), NULL, 'System'),
+(4, '00026', 'CHTABBOU', 'HASSAN', '1990-01-01', 'Dakhla', 'CN00026', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00026', 0, GETDATE(), NULL, 'System'),
+(4, '00028', 'EL MENNARI', 'SOUKAINA', '1990-01-01', 'Dakhla', 'CN00028', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00028', 0, GETDATE(), NULL, 'System'),
+(4, '00029', 'CHTABOU', 'KHALID', '1990-01-01', 'Dakhla', 'CN00029', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00029', 0, GETDATE(), NULL, 'System'),
+(4, '00032', 'AIHI', 'HAMZA', '1990-01-01', 'Dakhla', 'CN00032', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00032', 0, GETDATE(), NULL, 'System'),
+(4, '00055', 'EL MIMOUNI', 'MARIEME', '1990-01-01', 'Dakhla', 'CN00055', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00055', 0, GETDATE(), NULL, 'System'),
+(4, '00077', 'KASSAM', 'MEHDI', '1990-01-01', 'Dakhla', 'CN00077', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00077', 0, GETDATE(), NULL, 'System'),
+(4, '00082', 'MOUTAOIKIL', 'ZAKARIA', '1990-01-01', 'Dakhla', 'CN00082', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00082', 0, GETDATE(), NULL, 'System'),
+(4, '00090', 'BAITAKA', 'MUSA', '1990-01-01', 'Dakhla', 'CN00090', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00090', 0, GETDATE(), NULL, 'System'),
+(4, '00103', 'CHAABI', 'WIDADE', '1990-01-01', 'Dakhla', 'CN00103', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00103', 0, GETDATE(), NULL, 'System'),
+(4, '00125', 'RAMZI', 'KAOUTAR', '1990-01-01', 'Dakhla', 'CN00125', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00125', 0, GETDATE(), NULL, 'System'),
+(4, '00128', 'ELITAOUI', 'ACHRAF', '1990-01-01', 'Dakhla', 'CN00128', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00128', 0, GETDATE(), NULL, 'System'),
+(5, '00011', 'EZZINE', 'CHAIMAE', '1990-01-01', 'Dakhla', 'CN00011', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00011', 0, GETDATE(), NULL, 'System'),
+(5, '00065', 'EL JAOUHARI', 'OUALID', '1990-01-01', 'Dakhla', 'CN00065', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00065', 0, GETDATE(), NULL, 'System'),
+(6, '00049', 'BENIDIR', 'ILYAS', '1990-01-01', 'Dakhla', 'CN00049', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00049', 0, GETDATE(), NULL, 'System'),
+(6, '00053', 'EL KHAZOUM', 'ABDELKEBIR', '1990-01-01', 'Dakhla', 'CN00053', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00053', 0, GETDATE(), NULL, 'System'),
+(6, '00059', 'EZZINE', 'FATIMA EZZAHRA', '1990-01-01', 'Dakhla', 'CN00059', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00059', 0, GETDATE(), NULL, 'System'),
+(6, '00104', 'OURAMI', 'SAAD', '1990-01-01', 'Dakhla', 'CN00104', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00104', 0, GETDATE(), NULL, 'System'),
+(9, '00811', 'BAKR', 'TIAR', '1990-01-01', 'Dakhla', 'CN00811', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00811', 0, GETDATE(), NULL, 'System'),
+(10, '00008', 'ADERDOUR', 'FADOUA', '1990-01-01', 'Dakhla', 'CN00008', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00008', 0, GETDATE(), NULL, 'System'),
+(8, '00006', 'FARHAT ', 'MOHSSINE', '1990-01-01', 'Dakhla', 'CN00006', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00006', 0, GETDATE(), NULL, 'System'),
+(8, '00008', 'KARDI ', 'NAJIM', '1990-01-01', 'Dakhla', 'CN00008', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00008', 0, GETDATE(), NULL, 'System'),
+(8, '00010', 'EZAHRI ', 'ABDERAHIM', '1990-01-01', 'Dakhla', 'CN00010', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00010', 0, GETDATE(), NULL, 'System'),
+(8, '00014', 'BOUALOUCH ', 'BRAHIM', '1990-01-01', 'Dakhla', 'CN00014', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00014', 0, GETDATE(), NULL, 'System'),
+(7, '00002', 'BOUJA ', 'RACHID', '1990-01-01', 'Dakhla', 'CN00002', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00002', 0, GETDATE(), NULL, 'System'),
+(7, '00003', 'IBOURAK ', 'OMAR', '1990-01-01', 'Dakhla', 'CN00003', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00003', 0, GETDATE(), NULL, 'System'),
+(7, '00004', 'NACEF ', 'FATIMA', '1990-01-01', 'Dakhla', 'CN00004', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN00004', 0, GETDATE(), NULL, 'System'),
+(7, '03200', 'ADDAOUI', 'KHADIJA', '1990-01-01', 'Dakhla', 'CN03200', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN03200', 0, GETDATE(), NULL, 'System');

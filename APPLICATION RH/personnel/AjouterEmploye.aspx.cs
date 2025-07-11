@@ -69,6 +69,42 @@ namespace APPLICATION_RH.Pages.personnel
             pnlNumeroCNSS.Visible = (ddlSituationCNSS.SelectedValue == "D");
         }
 
+        // Method to load societes (already implemented, but improved)
+        private void LoadSocietes()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = @"SELECT IdSociete, NomSociete, CodeSociete 
+                           FROM SOCIETE 
+                           WHERE Actif = 1 
+                           ORDER BY NomSociete";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        conn.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            ddlSociete.Items.Clear();
+                            ddlSociete.Items.Insert(0, new ListItem("-- Sélectionner Société --", ""));
+
+                            while (reader.Read())
+                            {
+                                string text = $"{reader["NomSociete"]} ({reader["CodeSociete"]})";
+                                string value = reader["IdSociete"].ToString();
+                                ddlSociete.Items.Add(new ListItem(text, value));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowNotification($"Erreur lors du chargement des sociétés: {ex.Message}", "alert-danger");
+            }
+        }
+
         // Method to load departments based on selected society
         private void LoadDepartements()
         {
@@ -352,42 +388,6 @@ namespace APPLICATION_RH.Pages.personnel
                     ddlFonction.Items.Clear();
                     ddlFonction.Items.Insert(0, new ListItem("-- Fonction --", ""));
                     break;
-            }
-        }
-
-        // Method to load societes (already implemented, but improved)
-        private void LoadSocietes()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"SELECT IdSociete, NomSociete, CodeSociete 
-                           FROM SOCIETE 
-                           WHERE Actif = 1 
-                           ORDER BY NomSociete";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        conn.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            ddlSociete.Items.Clear();
-                            ddlSociete.Items.Insert(0, new ListItem("-- Sélectionner Société --", ""));
-
-                            while (reader.Read())
-                            {
-                                string text = $"{reader["NomSociete"]} ({reader["CodeSociete"]})";
-                                string value = reader["IdSociete"].ToString();
-                                ddlSociete.Items.Add(new ListItem(text, value));
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowNotification($"Erreur lors du chargement des sociétés: {ex.Message}", "alert-danger");
             }
         }
 

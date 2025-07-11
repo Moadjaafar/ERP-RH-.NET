@@ -16,11 +16,11 @@ namespace APPLICATION_RH
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Check if user is already logged in
-            if (Session["EmployeId"] != null)
-            {
-                Response.Redirect("~/Default.aspx"); // Redirect to main page
-            }
+            //// Check if user is already logged in
+            //if (Session["EmployeId"] != null)
+            //{
+            //    Response.Redirect("~/Default.aspx"); // Redirect to main page
+            //}
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)

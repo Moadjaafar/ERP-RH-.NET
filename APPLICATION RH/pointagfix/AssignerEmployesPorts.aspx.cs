@@ -480,7 +480,7 @@ namespace APPLICATION_RH.pointagfix
         private int GetCurrentUserId()
         {
             // TODO: Get from session/authentication
-            return Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 1;
+            return Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 154;
         }
 
         #endregion
