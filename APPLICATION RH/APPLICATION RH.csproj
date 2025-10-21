@@ -628,11 +628,15 @@
     <Content Include="assets\libs\feather-icons\icons.json" />
     <Content Include="assets\libs\jquery.counterup\counterup.jquery.json" />
     <Content Include="assets\libs\waypoints\testem.json" />
+<<<<<<< HEAD
     <Content Include="assets\css\app-rtl.min.css.map" />
     <Content Include="assets\css\app.min.css.map" />
     <Content Include="assets\css\icons-rtl.min.css.map" />
     <Content Include="assets\css\icons.min.css.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+=======
+    <Content Include="WebForm1.aspx" />
+>>>>>>> 4f0d80896c44cb8bba09d71cdda69e58fd6babf1
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Mobile\PointageMobile.aspx" />
     <Content Include="permissions\GestionMotsDePasse.aspx" />
@@ -655,9 +659,12 @@
     <Content Include="pointagfix\AssignerEmployesPorts.aspx" />
     <Content Include="pointagfix\EditPointagePort.aspx" />
     <Content Include="pointagfix\PointageEmployesPorts.aspx" />
+<<<<<<< HEAD
     <Content Include="reporting\EmployeePrintReport.aspx" />
     <Content Include="reporting\RaportEmploiyerPointage.aspx" />
     <Content Include="reporting\RaportPointagePort.aspx" />
+=======
+>>>>>>> 4f0d80896c44cb8bba09d71cdda69e58fd6babf1
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -890,6 +897,7 @@
       <DependentUpon>PointageEmployesPorts.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+<<<<<<< HEAD
     <Compile Include="reporting\EmployeePrintReport.aspx.cs">
       <DependentUpon>EmployeePrintReport.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -911,6 +919,8 @@
     <Compile Include="reporting\RaportPointagePort.aspx.designer.cs">
       <DependentUpon>RaportPointagePort.aspx</DependentUpon>
     </Compile>
+=======
+>>>>>>> 4f0d80896c44cb8bba09d71cdda69e58fd6babf1
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -931,6 +941,13 @@
     </Compile>
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm1.aspx.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm1.aspx.designer.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
