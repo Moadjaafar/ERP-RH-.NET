@@ -4,16 +4,29 @@
 <html lang="fr">
 <head runat="server">
     <meta charset="utf-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> | KING PELQGIAUE GROUP</title>
 
     <link rel="shortcut icon" href="~/assets/images/logo-sm.jpg" />
     <link href="~/assets/css/app.min.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.css" integrity="sha512-WnmDqbbAeHb7Put2nIAp7KNlnMup0FXVviOctducz1omuXB/hHK3s2vd3QLffK/CvvFUKrpioxdo+/Jo3k/xIw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <%--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />--%>
+    <%--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.css" integrity="sha512-WnmDqbbAeHb7Put2nIAp7KNlnMup0FXVviOctducz1omuXB/hHK3s2vd3QLffK/CvvFUKrpioxdo+/Jo3k/xIw==" crossorigin="anonymous" referrerpolicy="no-referrer" />--%>
+
+    <link href="~/jsapp/all.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/jsapp/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+
     <script src="/assets/libs/jquery/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js" integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- App js-->
+    <%--        <script src="/assets/js/app.js"></script>
+        <script src="/assets/js/head.js"></script>--%>
+    <%--        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>--%>
+
+    <script src="!/jsapp/sweetalert2.min.js"></script>
+
+    <%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js" integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>--%>
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -21,8 +34,6 @@
     <form runat="server">
         <asp:ScriptManager runat="server">
             <Scripts>
-                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
-                <%--Framework Scripts--%>
                 <asp:ScriptReference Name="MsAjaxBundle" />
                 <asp:ScriptReference Name="jquery" />
                 <asp:ScriptReference Name="bootstrap" />
@@ -54,9 +65,9 @@
                             </li>
                         </ul>
                         <ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
-                            <li class="d-none d-sm-flex">
+                            <%--                            <li class="d-none d-sm-flex">
                                 <p id="weather-info" class="card-text text-muted">Loading weather...</p>
-                            </li>
+                            </li>--%>
                             <!-- Button Trigger Customizer Offcanvas -->
                             <li class="d-none d-sm-flex">
                                 <button type="button" class="btn nav-link" data-toggle="fullscreen">
@@ -73,8 +84,11 @@
                             <!-- User Dropdown -->
                             <li class="dropdown notification-list topbar-dropdown">
                                 <a class="nav-link dropdown-toggle nav-user me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                    
-                                    <span class="pro-user-name ms-1">Moad Jaafar <i class="mdi mdi-chevron-down"></i></span>
+
+                                    <span class="pro-user-name ms-1">
+                                        <%: Session["EmployeNom"] ?? "Utilisateur" %>
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end profile-dropdown">
                                     <!-- item-->
@@ -83,16 +97,18 @@
                                     </div>
 
                                     <!-- item-->
-                                    <a href="pages-profile.html" class="dropdown-item notify-item">
+<%--                                    <a href="permissions/Profile.aspx" class="dropdown-item notify-item">--%>
+                                    <asp:HyperLink ID="HyperLink7" runat="server" NavigateUrl="~/permissions/Profile.aspx" CssClass="dropdown-item notify-item">
                                         <i class="mdi mdi-account-circle-outline fs-16 align-middle"></i>
                                         <span>My Account</span>
-                                    </a>
+                                        </asp:HyperLink>
+<%--                                    </a>--%>
 
                                     <!-- item-->
-                                    <a href="auth-lock-screen.html" class="dropdown-item notify-item">
+<%--                                    <a href="auth-lock-screen.html" style="display:none;" class="dropdown-item notify-item">
                                         <i class="mdi mdi-lock-outline fs-16 align-middle"></i>
                                         <span>Lock Screen</span>
-                                    </a>
+                                    </a>--%>
 
                                     <div class="dropdown-divider"></div>
 
@@ -150,11 +166,11 @@
                         </div>
 
                         <ul id="side-menu">
-                            <li class="menu-title">Menu</li>
-                            <li>
+                            <li runat="server" class="menu-title">Menu</li>
+                            <li runat="server">
                                 <a href="#sidebarDashboards" data-bs-toggle="collapse">
                                     <i data-feather="home"></i>
-                                    <span>Dashboard </span>
+                                    <span>Dashboard</span>
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <div class="collapse" id="sidebarDashboards">
@@ -163,22 +179,30 @@
                                             <asp:HyperLink ID="HyperLink1" runat="server"
                                                 NavigateUrl="~/Default.aspx"
                                                 CssClass="tp-link">
-                                                HRM
+                                                 HRM
+                                            </asp:HyperLink>
+                                        </li>
+                                        <li>
+                                            <asp:HyperLink ID="HyperLink6" runat="server"
+                                                NavigateUrl="~/reporting/RaportPointagePort.aspx"
+                                                CssClass="tp-link">
+                                                 Rapport de Pointage par Port
                                             </asp:HyperLink>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
-                            <li class="menu-title">Personnel</li>
-                            <li>
+
+                            <li class="menu-title" runat="server" id="liPersonnelTitle">Personnel</li>
+                            <li runat="server" id="liPersonnelMenu">
                                 <asp:LinkButton ID="lnkPersonnelToggle" runat="server"
                                     OnClientClick="return false;"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#sidebarPersonnel"
                                     CssClass="parent-menu-link">
-                                    <i data-feather="users"></i>
-                                    <span>Gestion du Personnel</span>
-                                    <span class="menu-arrow"></span>
+                                <i data-feather="users"></i>
+                                <span>Gestion du Personnel</span>
+                                <span class="menu-arrow"></span>
                                 </asp:LinkButton>
                                 <div class="collapse" id="sidebarPersonnel">
                                     <ul class="nav-second-level">
@@ -186,21 +210,22 @@
                                             <asp:HyperLink ID="hlAjouterEmploye" runat="server"
                                                 NavigateUrl="~/personnel/AjouterEmploye.aspx"
                                                 CssClass="tp-link">
-                                                Ajouter Employé
+                                            Ajouter Employé
                                             </asp:HyperLink>
                                         </li>
                                         <li>
                                             <asp:HyperLink ID="hlListeEmployes" runat="server"
                                                 NavigateUrl="~/personnel/ListeEmployes.aspx"
                                                 CssClass="tp-link">
-                                                Liste des Employés
+                                             Liste des Employés
                                             </asp:HyperLink>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
-                            <li class="menu-title">Pointage</li>
-                            <li>
+
+                            <li class="menu-title" runat="server" id="liPointageTitle">Pointage</li>
+                            <li runat="server" id="liPointageMenu">
                                 <asp:LinkButton ID="lnkPointageToggle" runat="server"
                                     OnClientClick="return false;"
                                     data-bs-toggle="collapse"
@@ -217,14 +242,14 @@
                                             <asp:HyperLink ID="hlAssignerEmployes" runat="server"
                                                 NavigateUrl="~/pointage/AssignerEmployes.aspx"
                                                 CssClass="tp-link">
-                                                Assigner Employés
+                                               Assigner Employés
                                             </asp:HyperLink>
                                         </li>
                                         <li>
                                             <asp:HyperLink ID="hlMonPointage" runat="server"
                                                 NavigateUrl="~/pointage/TransfertAssignation.aspx"
                                                 CssClass="tp-link">
-                                                Assignation de Groupe
+                                             Assignation de Groupe
                                             </asp:HyperLink>
                                         </li>
                                         <!-- Chef Equipe Menu Items -->
@@ -232,14 +257,14 @@
                                             <asp:HyperLink ID="hlMonEquipe" runat="server"
                                                 NavigateUrl="~/pointage/MonEquipe.aspx"
                                                 CssClass="tp-link">
-                                                Mon Équipe
+                                            Mon Équipe
                                             </asp:HyperLink>
                                         </li>
-                                         <li>
+                                        <li>
                                             <asp:HyperLink ID="HyperLink5" runat="server"
                                                 NavigateUrl="~/pointage/PointageProduction.aspx"
                                                 CssClass="tp-link">
-                                                Pointage Production
+                                            Pointage Production
                                             </asp:HyperLink>
                                         </li>
                                         <!-- General Menu Items -->
@@ -247,28 +272,31 @@
                                             <asp:HyperLink ID="hlPointageEquipe" runat="server"
                                                 NavigateUrl="~/pointage/PointageEquipe.aspx"
                                                 CssClass="tp-link">
-                                                Pointage Équipe
+                                            Pointage Équipe
                                             </asp:HyperLink>
                                         </li>
+
+
                                         <li>
                                             <asp:HyperLink ID="HyperLink2" runat="server"
                                                 NavigateUrl="~/pointage/SupervisionPointage.aspx"
                                                 CssClass="tp-link">
-                                                Contrôle Pointage
+                                            Contrôle Pointage
                                             </asp:HyperLink>
                                         </li>
                                         <li>
                                             <asp:HyperLink ID="hlRapportsPointage" runat="server"
                                                 NavigateUrl="~/pointage/PointageHeuresSupp.aspx"
                                                 CssClass="tp-link">
-                                                Heures Supplémentaires
+                                            Heures Supplémentaires
                                             </asp:HyperLink>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
-                            <li class="menu-title">Pointage Fix</li>
-                            <li>
+
+                            <li class="menu-title" runat="server" id="liPointageFixTitle">Pointage Fixe</li>
+                            <li runat="server" id="liPointageFixMenu">
                                 <asp:LinkButton ID="LinkButton1" runat="server"
                                     OnClientClick="return false;"
                                     data-bs-toggle="collapse"
@@ -284,7 +312,7 @@
                                             <asp:HyperLink ID="HyperLink3" runat="server"
                                                 NavigateUrl="~/pointagfix/AssignerEmployesPorts.aspx"
                                                 CssClass="tp-link">
-                                                Assigner Employés
+                                            Assigner Employés
                                             </asp:HyperLink>
                                         </li>
                                         <li>
@@ -294,10 +322,77 @@
                                                 Pointage Équipe
                                             </asp:HyperLink>
                                         </li>
-                                       
+                                        <li>
+                                            <asp:HyperLink ID="EditPointagePort" runat="server"
+                                                NavigateUrl="~/pointagfix/EditPointagePort.aspx"
+                                                CssClass="tp-link">
+                                              Edit Pointage Équipe
+                                            </asp:HyperLink>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
+
+
+                            <li class="menu-title" runat="server" id="liPermissionsTitle" visible="true">Permissions</li>
+                            <li runat="server" id="liPermissionsMenu" visible="true">
+                                <asp:LinkButton ID="lnkPermissionsToggle" runat="server"
+                                    OnClientClick="return false;"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#sidebarPermissions"
+                                    CssClass="parent-menu-link">
+                                     <i data-feather="shield"></i>
+                                     <span>Permissions</span>
+                                     <span class="menu-arrow"></span>
+                                </asp:LinkButton>
+                                <div class="collapse" id="sidebarPermissions">
+                                    <ul class="nav-second-level">
+                                        <li>
+                                            <asp:HyperLink ID="hlRolesManagement" runat="server"
+                                                NavigateUrl="~/permissions/RollesManagment.aspx"
+                                                CssClass="tp-link">
+                                                 <i class="fas fa-users-cog me-1"></i>
+                                                 Gestion des Rôles
+                                            </asp:HyperLink>
+                                        </li>
+                                        <li>
+                                            <asp:HyperLink ID="hlPagesManagement" runat="server"
+                                                NavigateUrl="~/permissions/PagesManagment.aspx"
+                                                CssClass="tp-link">
+                                                 <i class="fas fa-file-alt me-1"></i>
+                                                 Gestion des Pages
+                                            </asp:HyperLink>
+                                        </li>
+                                        <li>
+                                            <asp:HyperLink ID="hlRolePagePermissions" runat="server"
+                                                NavigateUrl="~/permissions/RollePage.aspx"
+                                                CssClass="tp-link">
+                                                 <i class="fas fa-shield-alt me-1"></i>
+                                                 Permissions Rôle-Pages
+                                            </asp:HyperLink>
+                                        </li>
+                                        <li>
+                                            <asp:HyperLink ID="hlEmployeeRoles" runat="server"
+                                                NavigateUrl="~/permissions/RolleEmployer.aspx"
+                                                CssClass="tp-link">
+                                                 <i class="fas fa-user-shield me-1"></i>
+                                                 Attribution des Rôles
+                                            </asp:HyperLink>
+                                        </li>
+                                        <li>
+                                            <asp:HyperLink ID="hlGestionPassword" runat="server"
+                                                NavigateUrl="~/permissions/GestionMotsDePasse.aspx"
+                                                CssClass="tp-link">
+                                                 <i class="fas fa-user-shield me-1"></i>
+                                                 Gestion Mots De Passe
+                                            </asp:HyperLink>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
+
                         </ul>
                     </div>
                     <div class="clearfix"></div>
@@ -335,9 +430,11 @@
         <script src="/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
         <script src="/assets/libs/feather-icons/feather.min.js"></script>
 
-        <!-- App js-->
         <script src="/assets/js/app.js"></script>
         <script src="/assets/js/head.js"></script>
+
+        <script src="/jsapp/fontawsone.js"></script>
+
 
         <script type="text/javascript">
             $(document).ready(function () {
@@ -414,52 +511,60 @@
                     });
                 }
             }
-            async function getWeatherData() {
-                const cacheKey = 'weather_dakhla';
-                const cacheTimeKey = 'weather_dakhla_timestamp';
-                const cacheExpiryMinutes = 1000; // Cache for 30 minutes
+            //async function getWeatherData() {
+            //    const cacheKey = 'weather_dakhla';
+            //    const cacheTimeKey = 'weather_dakhla_timestamp';
+            //    const cacheExpiryMinutes = 1000; // Cache for 30 minutes
 
-                // Check if we have cached data
-                const cachedData = localStorage.getItem(cacheKey);
-                const cachedTime = localStorage.getItem(cacheTimeKey);
+            //    // Check if we have cached data
+            //    const cachedData = localStorage.getItem(cacheKey);
+            //    const cachedTime = localStorage.getItem(cacheTimeKey);
 
-                if (cachedData && cachedTime) {
-                    const now = new Date().getTime();
-                    const cacheTime = parseInt(cachedTime);
-                    const isExpired = (now - cacheTime) > (cacheExpiryMinutes * 60 * 1000);
+            //    if (cachedData && cachedTime) {
+            //        const now = new Date().getTime();
+            //        const cacheTime = parseInt(cachedTime);
+            //        const isExpired = (now - cacheTime) > (cacheExpiryMinutes * 60 * 1000);
 
-                    if (!isExpired) {
-                        // Use cached data
-                        document.getElementById("weather-info").innerText = cachedData;
-                        return;
-                    }
-                }
+            //        if (!isExpired) {
+            //            // Use cached data
+            //            document.getElementById("weather-info").innerText = cachedData;
+            //            return;
+            //        }
+            //    }
 
-                // Fetch fresh data
-                try {
-                    const response = await fetch("https://wttr.in/Dakhla?format=3");
-                    const data = await response.text();
+            //    // Fetch fresh data
+            //    try {
+            //        const response = await fetch("https://wttr.in/Dakhla?format=3");
+            //        const data = await response.text();
 
-                    // Cache the data
-                    localStorage.setItem(cacheKey, data);
-                    localStorage.setItem(cacheTimeKey, new Date().getTime().toString());
+            //        // Cache the data
+            //        localStorage.setItem(cacheKey, data);
+            //        localStorage.setItem(cacheTimeKey, new Date().getTime().toString());
 
-                    document.getElementById("weather-info").innerText = data;
-                } catch (error) {
-                    // If fetch fails, try to use cached data as fallback
-                    if (cachedData) {
-                        document.getElementById("weather-info").innerText = cachedData;
-                    } else {
-                        document.getElementById("weather-info").innerText = "Weather info unavailable";
-                    }
-                }
-            }
+            //        document.getElementById("weather-info").innerText = data;
+            //    } catch (error) {
+            //        // If fetch fails, try to use cached data as fallback
+            //        if (cachedData) {
+            //            document.getElementById("weather-info").innerText = cachedData;
+            //        } else {
+            //            document.getElementById("weather-info").innerText = "Weather info unavailable";
+            //        }
+            //    }
+            //}
 
-            getWeatherData();
+            //getWeatherData();
         </script>
+
+
+
+
+
         <!-- Zone de notification -->
         <div id="notification-area" style="position: fixed; top: 80px; right: 20px; z-index: 9999; width: 350px;"></div>
 
     </form>
 </body>
 </html>
+
+
+

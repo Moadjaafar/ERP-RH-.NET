@@ -52,6 +52,16 @@
                                     </asp:DropDownList>
                                 </div>
                             </div>
+                            <div class="col-lg-3">
+                                <div class="mb-3">
+                                    <asp:Label ID="lblStatutAssignation" runat="server" Text="Statut d'assignation" CssClass="form-label" AssociatedControlID="ddlStatutAssignation" />
+                                    <asp:DropDownList ID="ddlStatutAssignation" runat="server" CssClass="form-select">
+                                        <asp:ListItem Value="" Text="-- Tous --" />
+                                        <asp:ListItem Value="ASSIGNE" Text="Assigné à un port" />
+                                        <asp:ListItem Value="NON_ASSIGNE" Text="Non assigné" />
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
                             <div class="col-lg-4">
                                 <div class="mb-3">
                                     <asp:Label ID="lblMatricule" runat="server" Text="Matricule" CssClass="form-label" AssociatedControlID="txtMatricule" />
@@ -136,12 +146,6 @@
                                 <div class="mb-3">
                                     <asp:Label ID="lblPort" runat="server" Text="Port d'Entrée *" CssClass="form-label" AssociatedControlID="ddlPort" />
                                     <asp:DropDownList ID="ddlPort" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPort_SelectedIndexChanged">
-                                        <asp:ListItem Value="" Text="-- Sélectionner Port --" />
-                                        <asp:ListItem Value="Port A - Entrée Principale" Text="Port A - Entrée Principale" />
-                                        <asp:ListItem Value="Port B - Entrée Personnel" Text="Port B - Entrée Personnel" />
-                                        <asp:ListItem Value="Port C - Entrée Livraisons" Text="Port C - Entrée Livraisons" />
-                                        <asp:ListItem Value="Port D - Entrée Urgences" Text="Port D - Entrée Urgences" />
-                                        <asp:ListItem Value="Port E - Entrée VIP" Text="Port E - Entrée VIP" />
                                     </asp:DropDownList>
                                 </div>
                             </div>

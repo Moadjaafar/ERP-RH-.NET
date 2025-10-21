@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace APPLICATION_RH {
-    
-    
-    public partial class SiteMaster {
-        
+namespace APPLICATION_RH
+{
+
+
+    public partial class SiteMaster
+    {
+
         /// <summary>
         /// HeadContent control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
-        
+
         /// <summary>
         /// litUserName control.
         /// </summary>
@@ -29,7 +31,16 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litUserName;
-        
+
+        /// <summary>
+        /// HyperLink7 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink7;
+
         /// <summary>
         /// btnLogout control.
         /// </summary>
@@ -38,7 +49,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
-        
+
         /// <summary>
         /// hlLogoLight control.
         /// </summary>
@@ -47,7 +58,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlLogoLight;
-        
+
         /// <summary>
         /// imgLogoSmLight control.
         /// </summary>
@@ -56,7 +67,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgLogoSmLight;
-        
+
         /// <summary>
         /// imgLogoLgLight control.
         /// </summary>
@@ -65,7 +76,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgLogoLgLight;
-        
+
         /// <summary>
         /// hlLogoDark control.
         /// </summary>
@@ -74,7 +85,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlLogoDark;
-        
+
         /// <summary>
         /// imgLogoSmDark control.
         /// </summary>
@@ -83,7 +94,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgLogoSmDark;
-        
+
         /// <summary>
         /// imgLogoLgDark control.
         /// </summary>
@@ -92,7 +103,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgLogoLgDark;
-        
+
         /// <summary>
         /// HyperLink1 control.
         /// </summary>
@@ -101,7 +112,34 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink1;
-        
+
+        /// <summary>
+        /// HyperLink6 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink HyperLink6;
+
+        /// <summary>
+        /// liPersonnelTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPersonnelTitle;
+
+        /// <summary>
+        /// liPersonnelMenu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPersonnelMenu;
+
         /// <summary>
         /// lnkPersonnelToggle control.
         /// </summary>
@@ -110,7 +148,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkPersonnelToggle;
-        
+
         /// <summary>
         /// hlAjouterEmploye control.
         /// </summary>
@@ -119,7 +157,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlAjouterEmploye;
-        
+
         /// <summary>
         /// hlListeEmployes control.
         /// </summary>
@@ -128,7 +166,25 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlListeEmployes;
-        
+
+        /// <summary>
+        /// liPointageTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPointageTitle;
+
+        /// <summary>
+        /// liPointageMenu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPointageMenu;
+
         /// <summary>
         /// lnkPointageToggle control.
         /// </summary>
@@ -137,7 +193,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkPointageToggle;
-        
+
         /// <summary>
         /// hlAssignerEmployes control.
         /// </summary>
@@ -146,7 +202,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlAssignerEmployes;
-        
+
         /// <summary>
         /// hlMonPointage control.
         /// </summary>
@@ -155,7 +211,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlMonPointage;
-        
+
         /// <summary>
         /// hlMonEquipe control.
         /// </summary>
@@ -164,7 +220,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlMonEquipe;
-        
+
         /// <summary>
         /// HyperLink5 control.
         /// </summary>
@@ -173,7 +229,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink5;
-        
+
         /// <summary>
         /// hlPointageEquipe control.
         /// </summary>
@@ -182,7 +238,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlPointageEquipe;
-        
+
         /// <summary>
         /// HyperLink2 control.
         /// </summary>
@@ -191,7 +247,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink2;
-        
+
         /// <summary>
         /// hlRapportsPointage control.
         /// </summary>
@@ -200,7 +256,25 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink hlRapportsPointage;
-        
+
+        /// <summary>
+        /// liPointageFixTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPointageFixTitle;
+
+        /// <summary>
+        /// liPointageFixMenu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPointageFixMenu;
+
         /// <summary>
         /// LinkButton1 control.
         /// </summary>
@@ -209,7 +283,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton1;
-        
+
         /// <summary>
         /// HyperLink3 control.
         /// </summary>
@@ -218,7 +292,7 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink3;
-        
+
         /// <summary>
         /// HyperLink4 control.
         /// </summary>
@@ -227,7 +301,88 @@ namespace APPLICATION_RH {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink4;
-        
+
+        /// <summary>
+        /// EditPointagePort control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink EditPointagePort;
+
+        /// <summary>
+        /// liPermissionsTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPermissionsTitle;
+
+        /// <summary>
+        /// liPermissionsMenu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liPermissionsMenu;
+
+        /// <summary>
+        /// lnkPermissionsToggle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkPermissionsToggle;
+
+        /// <summary>
+        /// hlRolesManagement control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlRolesManagement;
+
+        /// <summary>
+        /// hlPagesManagement control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlPagesManagement;
+
+        /// <summary>
+        /// hlRolePagePermissions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlRolePagePermissions;
+
+        /// <summary>
+        /// hlEmployeeRoles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlEmployeeRoles;
+
+        /// <summary>
+        /// hlGestionPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hlGestionPassword;
+
         /// <summary>
         /// MainContent control.
         /// </summary>

@@ -19,16 +19,61 @@ namespace APPLICATION_RH.pointagfix
             if (!IsPostBack)
             {
                 LoadSocietes();
+                PopulatePortDropdown();
                 LoadRecentPortAssignments();
             }
         }
 
         #region Load Data Methods
 
-        private void LoadSocietes()
+        private void PopulatePortDropdown()
         {
+            // Clear existing items
+            ddlPort.Items.Clear();
+
+            // Add default option
+            ddlPort.Items.Add(new ListItem("-- Toutes les Portes --", ""));
+
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            string query = "SELECT idPorte, Porte FROM PORTEUSINE ORDER BY Porte";
+
             try
             {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string portName = reader["Porte"].ToString();
+                                string portId = reader["idPorte"].ToString();
+
+                                // Add port to dropdown (you can use portId as value if needed)
+                                ddlPort.Items.Add(new ListItem(portName, portName));
+                            }
+                        }
+                    }
+                }
+
+                // Set default selection
+                ddlPort.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle error - add error message to dropdown
+                ddlPort.Items.Add(new ListItem("Erreur lors du chargement des portes", ""));
+
+                // Log error for debugging
+                System.Diagnostics.Debug.WriteLine($"Error loading ports: {ex.Message}");
+            }
+        }
+        private void LoadSocietes()
+        {
+            //try
+            //{
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = "SELECT IdSociete, NomSociete FROM SOCIETE WHERE Actif = 1 ORDER BY NomSociete";
@@ -42,13 +87,12 @@ namespace APPLICATION_RH.pointagfix
                         ddlSociete.Items.Insert(0, new ListItem("-- Sélectionner --", ""));
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                ShowError("Erreur lors du chargement des sociétés: " + ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    ShowError("Erreur lors du chargement des sociétés: " + ex.Message);
+            //}
         }
-
         private void LoadDepartements()
         {
             ddlDepartement.Items.Clear();
@@ -79,6 +123,8 @@ namespace APPLICATION_RH.pointagfix
             }
         }
 
+        // 2. Modifiez seulement cette partie dans votre méthode SearchEmployees existante
+
         private void SearchEmployees()
         {
             if (string.IsNullOrEmpty(ddlSociete.SelectedValue))
@@ -92,25 +138,31 @@ namespace APPLICATION_RH.pointagfix
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = @"
-                        SELECT e.IdEmploye, e.Matricule, 
-                               e.Nom + ' ' + e.Prenom AS NomComplet,
-                               e.TypeEmploye,
-                               ISNULL(d.NomDepartement, 'Non assigné') AS NomDepartement,
-                               ISNULL(ep.NomPort, 'Aucun port assigné') AS PortActuel
-                        FROM EMPLOYE e
-                        LEFT JOIN DEPARTEMENT d ON e.IdDepartement = d.IdDepartement
-                        LEFT JOIN EMPLOYE_PORT ep ON e.IdEmploye = ep.IdEmploye 
-                            AND ep.is_deleted = 0
-                        WHERE e.IdSociete = @IdSociete 
-                        AND e.is_deleted = 0
-                        AND e.DateSortie IS NULL";
+                SELECT e.IdEmploye, e.Matricule, 
+                       e.Nom + ' ' + e.Prenom AS NomComplet,
+                       e.TypeEmploye,
+                       ISNULL(d.NomDepartement, 'Non assigné') AS NomDepartement,
+                       ISNULL(ep.NomPort, 'Aucun port assigné') AS PortActuel
+                FROM EMPLOYE e
+                LEFT JOIN DEPARTEMENT d ON e.IdDepartement = d.IdDepartement
+                LEFT JOIN EMPLOYE_PORT ep ON e.IdEmploye = ep.IdEmploye 
+                    AND ep.is_deleted = 0
+                WHERE e.IdSociete = @IdSociete 
+                AND e.is_deleted = 0
+                AND e.DateSortie IS NULL";
 
-                    // Add filters
+                    // Filtres existants
                     if (!string.IsNullOrEmpty(ddlDepartement.SelectedValue))
                         query += " AND e.IdDepartement = @IdDepartement";
 
                     if (!string.IsNullOrEmpty(txtMatricule.Text.Trim()))
                         query += " AND e.Matricule LIKE @Matricule";
+
+                    // NOUVEAU FILTRE - Ajoutez ces lignes
+                    if (ddlStatutAssignation.SelectedValue == "ASSIGNE")
+                        query += " AND ep.IdEmploye IS NOT NULL";
+                    else if (ddlStatutAssignation.SelectedValue == "NON_ASSIGNE")
+                        query += " AND ep.IdEmploye IS NULL";
 
                     query += " ORDER BY e.Nom, e.Prenom";
 
@@ -153,6 +205,91 @@ namespace APPLICATION_RH.pointagfix
                 ShowError("Erreur lors de la recherche: " + ex.Message);
             }
         }
+
+        // 3. Mettez à jour la méthode btnClearFilters_Click
+        protected void btnClearFilters_Click(object sender, EventArgs e)
+        {
+            ddlDepartement.SelectedIndex = 0;
+            ddlStatutAssignation.SelectedIndex = 0; // Ajoutez cette ligne
+            txtMatricule.Text = "";
+            txtNote.Text = "";
+            ClearResults();
+        }
+
+        //private void SearchEmployees()
+        //{
+        //    if (string.IsNullOrEmpty(ddlSociete.SelectedValue))
+        //    {
+        //        ShowError("Veuillez sélectionner une société");
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            string query = @"
+        //                SELECT e.IdEmploye, e.Matricule, 
+        //                       e.Nom + ' ' + e.Prenom AS NomComplet,
+        //                       e.TypeEmploye,
+        //                       ISNULL(d.NomDepartement, 'Non assigné') AS NomDepartement,
+        //                       ISNULL(ep.NomPort, 'Aucun port assigné') AS PortActuel
+        //                FROM EMPLOYE e
+        //                LEFT JOIN DEPARTEMENT d ON e.IdDepartement = d.IdDepartement
+        //                LEFT JOIN EMPLOYE_PORT ep ON e.IdEmploye = ep.IdEmploye 
+        //                    AND ep.is_deleted = 0
+        //                WHERE e.IdSociete = @IdSociete 
+        //                AND e.is_deleted = 0
+        //                AND e.DateSortie IS NULL";
+
+        //            // Add filters
+        //            if (!string.IsNullOrEmpty(ddlDepartement.SelectedValue))
+        //                query += " AND e.IdDepartement = @IdDepartement";
+
+        //            if (!string.IsNullOrEmpty(txtMatricule.Text.Trim()))
+        //                query += " AND e.Matricule LIKE @Matricule";
+
+        //            query += " ORDER BY e.Nom, e.Prenom";
+
+        //            using (SqlCommand cmd = new SqlCommand(query, conn))
+        //            {
+        //                cmd.Parameters.AddWithValue("@IdSociete", ddlSociete.SelectedValue);
+
+        //                if (!string.IsNullOrEmpty(ddlDepartement.SelectedValue))
+        //                    cmd.Parameters.AddWithValue("@IdDepartement", ddlDepartement.SelectedValue);
+
+        //                if (!string.IsNullOrEmpty(txtMatricule.Text.Trim()))
+        //                    cmd.Parameters.AddWithValue("@Matricule", "%" + txtMatricule.Text.Trim() + "%");
+
+        //                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+        //                {
+        //                    DataTable dt = new DataTable();
+        //                    adapter.Fill(dt);
+
+        //                    if (dt.Rows.Count > 0)
+        //                    {
+        //                        gvEmployees.DataSource = dt;
+        //                        gvEmployees.DataBind();
+        //                        litEmployeeCount.Text = dt.Rows.Count.ToString();
+        //                        pnlResults.Visible = true;
+        //                        pnlAssignment.Visible = true;
+        //                        ShowSuccess($"{dt.Rows.Count} employé(s) trouvé(s)");
+        //                    }
+        //                    else
+        //                    {
+        //                        pnlResults.Visible = false;
+        //                        pnlAssignment.Visible = false;
+        //                        ShowError("Aucun employé trouvé avec ces critères");
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ShowError("Erreur lors de la recherche: " + ex.Message);
+        //    }
+        //}
 
         private void LoadPortInfo()
         {
@@ -209,11 +346,11 @@ namespace APPLICATION_RH.pointagfix
 
         private string GetPortType(string portName)
         {
-            if (portName.Contains("Principale")) return "Entrée Principale";
-            if (portName.Contains("Personnel")) return "Entrée Personnel";
-            if (portName.Contains("Livraisons")) return "Entrée Livraisons";
-            if (portName.Contains("Urgences")) return "Entrée Urgences";
-            if (portName.Contains("VIP")) return "Entrée VIP";
+            if (portName.Contains("Principal")) return "Entrée Principal";
+            if (portName.Contains("GSF")) return "Entrée GSF";
+            if (portName.Contains("POI")) return "Entrée POI";
+            if (portName.Contains("Technique")) return "Entrée Technique";
+            if (portName.Contains("ERG PACKAGING")) return "Entrée ERG PACKAGING";
             return "Entrée Standard";
         }
 
@@ -277,13 +414,13 @@ namespace APPLICATION_RH.pointagfix
             SearchEmployees();
         }
 
-        protected void btnClearFilters_Click(object sender, EventArgs e)
-        {
-            ddlDepartement.SelectedIndex = 0;
-            txtMatricule.Text = "";
-            txtNote.Text = "";
-            ClearResults();
-        }
+        //protected void btnClearFilters_Click(object sender, EventArgs e)
+        //{
+        //    ddlDepartement.SelectedIndex = 0;
+        //    txtMatricule.Text = "";
+        //    txtNote.Text = "";
+        //    ClearResults();
+        //}
 
         protected void btnSelectAll_Click(object sender, EventArgs e)
         {
@@ -480,7 +617,7 @@ namespace APPLICATION_RH.pointagfix
         private int GetCurrentUserId()
         {
             // TODO: Get from session/authentication
-            return Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 154;
+            return Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 65;
         }
 
         #endregion

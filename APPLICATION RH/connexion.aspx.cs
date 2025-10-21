@@ -17,10 +17,10 @@ namespace APPLICATION_RH
         protected void Page_Load(object sender, EventArgs e)
         {
             //// Check if user is already logged in
-            //if (Session["EmployeId"] != null)
-            //{
-            //    Response.Redirect("~/Default.aspx"); // Redirect to main page
-            //}
+            if (Session["EmployeId"] != null)
+            {
+                Response.Redirect("~/Default.aspx"); // Redirect to main page
+            }
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -32,24 +32,30 @@ namespace APPLICATION_RH
 
             // Authenticate user
             var employeeInfo = AuthenticateUser(loginInput, password);
-
             if (employeeInfo != null)
             {
                 // Successful authentication
                 CreateUserSession(employeeInfo, rememberMe);
 
-                // Redirect to dashboard or main page
-                Response.Redirect("~/Default.aspx");
+                // Check user role and redirect accordingly
+                string userRole = employeeInfo["Rolle"]?.ToString();
 
+                if (userRole == "Pointage Porte")
+                {
+                    // Redirect securityPortA users directly to their specific page
+                    Response.Redirect("~/pointagfix/PointageEmployesPorts.aspx");
+                }
+                else
+                {
+                    // Redirect other users to dashboard
+                    Response.Redirect("~/Default.aspx");
+                }
             }
             else
             {
                 // Failed authentication
                 ShowErrorMessage("Identifiants invalides. Veuillez vérifier votre matricule/email et mot de passe.");
-
             }
-
-
         }
 
         private Dictionary<string, object> AuthenticateUser(string loginInput, string password)
@@ -132,6 +138,8 @@ namespace APPLICATION_RH
             }
         }
 
+
+
         private void ShowErrorMessage(string message)
         {
             string script = $"alert('{message.Replace("'", "\\'")}');";
@@ -171,3 +179,5 @@ namespace APPLICATION_RH
 
     }
 }
+
+

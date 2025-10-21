@@ -1,6 +1,15 @@
 CREATE DATABASE ERP_RH_Pointag_V2;
 use ERP_RH_Pointag_V2
 
+
+select * from EMPLOYE where Nom = 'jaafar'
+UPDATE EMPLOYE 
+SET Rolle = 'Dev',
+    DateModification = GETDATE(),
+    ModifiePar = 'moad'
+WHERE IdEmploye = 55;
+
+
 -- Sociétés du groupe
 CREATE TABLE SOCIETE (
     IdSociete INT IDENTITY(1,1) PRIMARY KEY,
@@ -87,7 +96,7 @@ CREATE TABLE EMPLACEMENT (
  
 -- Drop existing EMPLOYE table and its constraints
 Delete EMPLOYE
-select * from EMPLOYE
+select * from CELLULE
 
 -- Add new column without unique constraint
 ALTER TABLE EMPLOYE ADD CinPassport_New NVARCHAR(50);
@@ -97,7 +106,7 @@ UPDATE EMPLOYE SET CinPassport_New = CinPassport;
 
 -- Drop old column (this removes the unique constraint)
 ALTER TABLE EMPLOYE DROP COLUMN CinPassport;
-ALTER TABLE EMPLOYE DROP CONSTRAINT UQ__EMPLOYE__2671843421B389D0;
+ALTER TABLE EMPLOYE DROP CONSTRAINT UQ__EMPLOYE__2671843439E79919;
 
 -- Rename new column to original name
 EXEC sp_rename 'EMPLOYE.CinPassport_New', 'CinPassport', 'COLUMN';
@@ -242,7 +251,7 @@ CREATE TABLE AUDIT_EMPLOYE (
 );
 
 
-
+select * from FONCTION
 
 -- First, let's create a mapping of services to department names
 
@@ -283,6 +292,8 @@ INSERT INTO SERVICE (IdDepartement, NomService, CodeService) VALUES
 INSERT INTO SERVICE (IdDepartement, NomService, CodeService) VALUES
 (@IdDeptStock_GSF, 'STOCK', 'STCK-GSF');
 
+select * from SERVICE
+
 -- For ERG CONSERVE (assuming IdSociete = 2)
 DECLARE @IdDeptProduction_ERG INT, @IdDeptQualite_ERG INT, @IdDeptRH_ERG INT, @IdDeptTechnique_ERG INT, @IdDeptStock_ERG INT;
 
@@ -320,6 +331,44 @@ INSERT INTO SERVICE (IdDepartement, NomService, CodeService) VALUES
 -- Insert Stock services for ERG
 INSERT INTO SERVICE (IdDepartement, NomService, CodeService) VALUES
 (@IdDeptStock_ERG, 'STOCK', 'STCK-ERG');
+
+select * from FONCTION
+-- INSERT statements for FONCTION table (IdFonction will be auto-generated)
+INSERT INTO FONCTION (IdService, IdCellule, NomFonction, CodeFonction, Description, NiveauResponsabilite, DateCreation, Actif) VALUES
+(1, 1, 'ouvrier(e) de contrôle guano', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(1, 2, 'ouvrier(e) de contrôle M', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(1, 2, 'chef d equipe Controle', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(2, 3, 'ouvrier(e) de demoulage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(3, 4, 'chargé(e) de collecte des informations de la prod', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(3, 4, 'ouvrier(e) de coupage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(3, 4, 'ouvrier(e) d emballage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(3, 4, 'chef d equipe emballage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(4, 5, 'ouvrier(e) de menuiserie', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(4, 6, 'ouvrier(e) de transpalette emballage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(4, 6, 'ouvrier(e) de traspalette demoulage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(4, 6, 'ouvrier(e) de traspalette salle', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(5, 7, 'ouvrier(e) de coupage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(5, 8, 'ouvrier(e) de décharge bassins', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(5, 9, 'ouvrier(e) de glace', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(5, 10, 'ouvrier(e) de slaurry', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(5, 11, 'AGENT DE PECHE COTIERE', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(5, 12, 'agent de réception MP', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(6, 13, 'chargé(e) de collecte des informations de la prod', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(6, 14, 'AGENT SUIVI DES OUVRIERE', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(7, 15, 'chef d equipe contrôle', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(7, 15, 'ouvrier(e) de machine', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(8, 16, 'ouvrier(e) de calibreuse', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(8, 17, 'ouvrier(e) de triage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(9, 18, 'agent d hygiene', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(9, 18, 'ouvrier(e) de menage', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(10, 19, 'AGENT DE BIANDRIE', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(11, 20, 'ouvrier(e) de menage RH', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(11, 20, 'ouvrier(e) de menage externe', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(12, 21, 'agent de cantine', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(13, 22, 'TECHNICIEN DE MACHINES', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1),
+(14, 23, 'agent de fermeture porte chambre froide', NULL, NULL, 1, '2025-06-01 16:19:34.527', 1);
+
+
 
 -- For PROTEIN AND OIL (assuming IdSociete = 3)
 DECLARE @IdDeptProduction_PRO INT, @IdDeptQualite_PRO INT, @IdDeptRH_PRO INT, @IdDeptTechnique_PRO INT, @IdDeptStock_PRO INT;
@@ -364,6 +413,12 @@ SELECT * FROM EMPLOYE
 UPDATE EMPLOYE 
 SET Email = 'admin@gmail.com'
 WHERE IdEmploye = 1;
+
+
+SELECT * FROM EMPLOYE
+
+
+SELECT IdSociete, NomSociete FROM SOCIETE WHERE Actif = 1 ORDER BY NomSociete
 
 INSERT INTO CELLULE (NomCellule, IdService) VALUES 
 (N'CONTRÔLE GUANO', 1),
@@ -822,6 +877,7 @@ INSERT INTO EMPLOYE (
 (2, '06333', 'BENLAHOUCINE', 'AHMED', '1990-01-01', 'Dakhla', 'CN06333', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06333', 0, GETDATE(), NULL, 'System'),
 (2, '06369', 'BOUHMALA', 'AYOUB', '1990-01-01', 'Dakhla', 'CN06369', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06369', 0, GETDATE(), NULL, 'System'),
 (2, '06442', 'JAAFAR', 'MOAD', '1990-01-01', 'Dakhla', 'CN06442', 'Homme', 'Célibataire', 0, 'Dakhla', '0612345678', NULL, 'Marocaine', 'Baccalauréat', NULL, '2024-01-15', NULL, 'CDI', 'OUVRIER', 1, NULL, NULL, 1, 3, 4, 7, NULL, 'JOUR', 'D', 'CN06442', 0, GETDATE(), NULL, 'System');
+
 
 INSERT INTO EMPLOYE (
     IdSociete, Matricule, Nom, Prenom, DateNaissance, LieuNaissance, 

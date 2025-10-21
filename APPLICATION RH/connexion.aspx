@@ -54,7 +54,7 @@
                                                 <div class="pt-0">
                                                     <div class="form-group mb-3">
                                                         <asp:Label ID="lblEmail" runat="server" Text="Adresse e-mail" CssClass="form-label" AssociatedControlID="txtEmail" />
-                                                        <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email"
+                                                        <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="SingleLine"
                                                             placeholder="Enter your email" ValidationGroup="LoginGroup" />
                                                         <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail"
                                                             ErrorMessage="L'adresse e-mail est requise" Display="Dynamic"

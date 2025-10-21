@@ -13,30 +13,195 @@ namespace APPLICATION_RH.pointagfix
     public partial class PointageEmployesPorts : System.Web.UI.Page
     {
         private readonly string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
         private int? QuickEmployeeId
         {
             get { return ViewState["QuickEmployeeId"] as int?; }
             set { ViewState["QuickEmployeeId"] = value; }
         }
-        private int? CustomEmployeeId
+
+        // Property to persist the selected date
+        private DateTime PointageDate
         {
-            get { return ViewState["CustomEmployeeId"] as int?; }
-            set { ViewState["CustomEmployeeId"] = value; }
+            get
+            {
+                if (ViewState["PointageDate"] != null)
+                    return (DateTime)ViewState["PointageDate"];
+                return DateTime.Now.Date;
+            }
+            set
+            {
+                ViewState["PointageDate"] = value;
+            }
+        }
+
+        // Property to persist the time value
+        private string PointageTime
+        {
+            get
+            {
+                return ViewState["PointageTime"] as string ?? DateTime.Now.ToString("HH:mm");
+            }
+            set
+            {
+                ViewState["PointageTime"] = value;
+            }
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                txtDatePointage.Text = DateTime.Now.ToString("yyyy-MM-dd");
+                // Initialize date and time inputs with current date/time
+                txtPointageDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+                txtPointageTime.Text = DateTime.Now.ToString("HH:mm");
+                PointageDate = DateTime.Now.Date;
+                PointageTime = txtPointageTime.Text;
 
-                // Handle success/error messages from redirects (PRG pattern)
+                PopulatePortDropdown();
                 HandleRedirectMessages();
-
-                LoadRecentPointages();
-
-                // Restore state from query parameters
+                UpdateDateStatusIndicator();
                 RestoreStateFromQueryString();
+            }
+            else
+            {
+                // Preserve the time value on postback
+                if (!string.IsNullOrEmpty(txtPointageTime.Text))
+                {
+                    PointageTime = txtPointageTime.Text;
+                }
+                else
+                {
+                    txtPointageTime.Text = PointageTime;
+                }
+
+                // Preserve the date value on postback
+                if (!string.IsNullOrEmpty(txtPointageDate.Text))
+                {
+                    if (DateTime.TryParse(txtPointageDate.Text, out DateTime selectedDate))
+                    {
+                        PointageDate = selectedDate.Date;
+                    }
+                }
+                else
+                {
+                    txtPointageDate.Text = PointageDate.ToString("yyyy-MM-dd");
+                }
+
+                UpdateDateStatusIndicator();
+            }
+        }
+
+        private void UpdateDateStatusIndicator()
+        {
+            DateTime today = DateTime.Now.Date;
+            DateTime selectedDate = PointageDate;
+
+            if (selectedDate == today)
+            {
+                litDateStatus.Text = "<span class='today-indicator'><i class='fas fa-calendar-check'></i> Aujourd'hui</span>";
+            }
+            else if (selectedDate < today)
+            {
+                int daysDiff = (today - selectedDate).Days;
+                litDateStatus.Text = $"<span class='past-date-indicator'><i class='fas fa-calendar-minus'></i> Il y a {daysDiff} jour{(daysDiff > 1 ? "s" : "")}</span>";
+            }
+            else
+            {
+                int daysDiff = (selectedDate - today).Days;
+                litDateStatus.Text = $"<span class='text-info'><i class='fas fa-calendar-plus'></i> Dans {daysDiff} jour{(daysDiff > 1 ? "s" : "")}</span>";
+            }
+        }
+
+        //private void PopulatePortDropdown()
+        //{
+        //    string userRole = Session["EmployeRole"]?.ToString();
+
+        //    // Clear existing items
+        //    ddlPort.Items.Clear();
+
+        //    if (userRole == "securityPortA")
+        //    {
+        //        // Only show Port A for securityPortA users
+        //        ddlPort.Items.Add(new ListItem("Port A - Entrée Principale", "Port A - Entrée Principale"));
+        //        ddlPort.SelectedIndex = 0; // Auto-select the only option
+        //        ddlPort.Enabled = false; // Disable since there's only one option
+        //    }
+        //    else
+        //    {
+
+        //        // Show all ports for other users
+        //        ddlPort.Items.Add(new ListItem("-- Sélectionner Porte --", ""));
+        //        ddlPort.Items.Add(new ListItem("Porte A - Entrée Principal", "Porte A - Entrée Principal"));
+        //        ddlPort.Items.Add(new ListItem("Porte B - Entrée GSF", "Porte B - Entrée GSF"));
+        //        ddlPort.Items.Add(new ListItem("Porte C - Entrée POI", "Porte C - Entrée POI"));
+        //        ddlPort.Items.Add(new ListItem("Porte D - Entrée Technique", "Porte D - Entrée Technique"));
+        //        ddlPort.Items.Add(new ListItem("Porte E - Entrée ERG PACKAGING", "Porte E - Entrée ERG PACKAGING"));
+        //        ddlPort.Enabled = true;
+        //    }
+        //}
+
+        private void PopulatePortDropdown()
+        {
+            int employeId = Convert.ToInt32(Session["EmployeId"]?.ToString());
+
+            // Clear existing items
+            ddlPort.Items.Clear();
+
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            string query = @"
+        SELECT DISTINCT p.* 
+        FROM AccessLogine al
+        INNER JOIN PORTEUSINE p ON al.IDPorteAssigne = p.idPorte
+        WHERE al.IdEmploye = @EmployeId";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@EmployeId", employeId);
+
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int portCount = 0;
+
+                            while (reader.Read())
+                            {
+                                // Use column index to avoid column name errors
+                                string portName = reader[1].ToString(); // Adjust index based on your table structure
+                                ddlPort.Items.Add(new ListItem(portName, portName));
+                                portCount++;
+                            }
+
+                            if (portCount == 0)
+                            {
+                                ddlPort.Items.Add(new ListItem("Aucune porte assignée", ""));
+                                ddlPort.Enabled = false;
+                            }
+                            else if (portCount == 1)
+                            {
+                                ddlPort.SelectedIndex = 0;
+                                ddlPort.Enabled = false;
+                            }
+                            else
+                            {
+                                ddlPort.Items.Insert(0, new ListItem("Toutes mes portes assignées", ""));
+                                ddlPort.Enabled = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ddlPort.Items.Add(new ListItem("Erreur lors du chargement des portes", ""));
+                ddlPort.Enabled = false;
+                // Log error if needed
+                System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
             }
         }
 
@@ -59,23 +224,37 @@ namespace APPLICATION_RH.pointagfix
         private void RestoreStateFromQueryString()
         {
             string port = Request.QueryString["port"];
-            string date = Request.QueryString["date"];
             string employee = Request.QueryString["employee"];
+            string time = Request.QueryString["time"];
+            string date = Request.QueryString["date"];
 
             if (!string.IsNullOrEmpty(port))
             {
                 ddlPort.SelectedValue = port;
             }
 
-            if (!string.IsNullOrEmpty(date))
-            {
-                txtDatePointage.Text = date;
-            }
-
             if (!string.IsNullOrEmpty(employee))
             {
                 txtMatricule.Text = HttpUtility.UrlDecode(employee);
                 SearchEmployeeByMatricule();
+            }
+
+            // Restore time value
+            if (!string.IsNullOrEmpty(time))
+            {
+                txtPointageTime.Text = HttpUtility.UrlDecode(time);
+                PointageTime = txtPointageTime.Text;
+            }
+
+            // Restore date value
+            if (!string.IsNullOrEmpty(date))
+            {
+                if (DateTime.TryParse(HttpUtility.UrlDecode(date), out DateTime selectedDate))
+                {
+                    txtPointageDate.Text = selectedDate.ToString("yyyy-MM-dd");
+                    PointageDate = selectedDate.Date;
+                    UpdateDateStatusIndicator();
+                }
             }
 
             // Load employees if port is selected
@@ -105,11 +284,16 @@ namespace APPLICATION_RH.pointagfix
             if (!string.IsNullOrEmpty(ddlPort.SelectedValue))
                 parameters.Add($"port={HttpUtility.UrlEncode(ddlPort.SelectedValue)}");
 
-            if (!string.IsNullOrEmpty(txtDatePointage.Text))
-                parameters.Add($"date={HttpUtility.UrlEncode(txtDatePointage.Text)}");
-
             if (!string.IsNullOrEmpty(txtMatricule.Text))
                 parameters.Add($"employee={HttpUtility.UrlEncode(txtMatricule.Text)}");
+
+            // Add time parameter
+            if (!string.IsNullOrEmpty(txtPointageTime.Text))
+                parameters.Add($"time={HttpUtility.UrlEncode(txtPointageTime.Text)}");
+
+            // Add date parameter
+            if (!string.IsNullOrEmpty(txtPointageDate.Text))
+                parameters.Add($"date={HttpUtility.UrlEncode(txtPointageDate.Text)}");
 
             return parameters.Count > 0 ? "?" + string.Join("&", parameters) : "";
         }
@@ -125,13 +309,13 @@ namespace APPLICATION_RH.pointagfix
 
             try
             {
-                DateTime selectedDate = DateTime.Parse(txtDatePointage.Text);
+                DateTime selectedDate = PointageDate; // Use selected date instead of today
 
-                // Load both present and absent employees
+                // Load both present and absent employees for the selected date
                 LoadEmployeesPresent(selectedDate);
                 LoadEmployeesAbsent(selectedDate);
-
                 LoadDailySummary(selectedDate);
+
                 pnlEmployeePointage.Visible = true;
             }
             catch (Exception ex)
@@ -154,9 +338,9 @@ namespace APPLICATION_RH.pointagfix
                             ISNULL(dernierPointage.TypePointage, 'SORTIE') AS StatutActuel,
                             CASE 
                                 WHEN dernierPointage.DateHeure IS NOT NULL 
-                                THEN FORMAT(dernierPointage.DateHeure, 'HH:mm')
+                                THEN FORMAT(dernierPointage.DateHeure, 'dd/MM/yyyy HH:mm')
                                 ELSE 'Aucun pointage'
-                            END AS DerniereHeure,
+                            END AS DerniereDateHeure,
                             ISNULL(heuresJour.TotalHeures, '0h00') AS HeuresJour,
                             CASE 
                                 WHEN ISNULL(dernierPointage.TypePointage, 'SORTIE') = 'ENTREE' THEN 0
@@ -179,7 +363,8 @@ namespace APPLICATION_RH.pointagfix
                             INNER JOIN (
                                 SELECT IdEmploye, MAX(DateHeure) as MaxDate
                                 FROM EMPLOYE_POINTAGE 
-                                WHERE is_deleted = 0
+                                WHERE CAST(DateHeure AS DATE) <= @DateSelected
+                                AND is_deleted = 0
                                 GROUP BY IdEmploye
                             ) p2 ON p1.IdEmploye = p2.IdEmploye AND p1.DateHeure = p2.MaxDate
                             WHERE p1.is_deleted = 0
@@ -239,9 +424,9 @@ namespace APPLICATION_RH.pointagfix
                             ISNULL(dernierPointage.TypePointage, 'SORTIE') AS StatutActuel,
                             CASE 
                                 WHEN dernierPointage.DateHeure IS NOT NULL 
-                                THEN FORMAT(dernierPointage.DateHeure, 'HH:mm')
+                                THEN FORMAT(dernierPointage.DateHeure, 'dd/MM/yyyy HH:mm')
                                 ELSE 'Aucun pointage'
-                            END AS DerniereHeure,
+                            END AS DerniereDateHeure,
                             ISNULL(heuresJour.TotalHeures, '0h00') AS HeuresJour,
                             CASE 
                                 WHEN ISNULL(dernierPointage.TypePointage, 'SORTIE') = 'ENTREE' THEN 0
@@ -264,7 +449,8 @@ namespace APPLICATION_RH.pointagfix
                             INNER JOIN (
                                 SELECT IdEmploye, MAX(DateHeure) as MaxDate
                                 FROM EMPLOYE_POINTAGE 
-                                WHERE is_deleted = 0
+                                WHERE CAST(DateHeure AS DATE) <= @DateSelected
+                                AND is_deleted = 0
                                 GROUP BY IdEmploye
                             ) p2 ON p1.IdEmploye = p2.IdEmploye AND p1.DateHeure = p2.MaxDate
                             WHERE p1.is_deleted = 0
@@ -309,8 +495,6 @@ namespace APPLICATION_RH.pointagfix
                 ShowError("Erreur lors du chargement des employés absents: " + ex.Message);
             }
         }
-
-        // ... [Keep all existing methods: CalculateWorkingHours, LoadDailySummary, LoadRecentPointages, etc.] ...
 
         private string CalculateWorkingHours(int employeeId, DateTime date)
         {
@@ -420,304 +604,6 @@ namespace APPLICATION_RH.pointagfix
             }
         }
 
-        private void LoadRecentPointages()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"
-                        SELECT 
-                            p.IdPointage,
-                            e.Nom + ' ' + e.Prenom AS NomEmploye,
-                            e.Matricule AS MatriculeEmploye,
-                            p.NomPort,
-                            p.TypePointage,
-                            p.DateHeure,
-                            ISNULL(assigneur.Nom + ' ' + assigneur.Prenom, 'Système') AS AssignePar
-                        FROM (
-                            SELECT 
-                                IdPointage,
-                                IdEmploye,
-                                NomPort,
-                                TypePointage,
-                                DateHeure,
-                                AssignePar,
-                                ROW_NUMBER() OVER (PARTITION BY IdEmploye ORDER BY DateHeure DESC) as rn
-                            FROM EMPLOYE_POINTAGE 
-                            WHERE is_deleted = 0 
-                            AND DateHeure >= DATEADD(HOUR, -24, GETDATE())
-                        ) p
-                        INNER JOIN EMPLOYE e ON p.IdEmploye = e.IdEmploye
-                        LEFT JOIN EMPLOYE assigneur ON p.AssignePar = assigneur.IdEmploye
-                        WHERE p.rn = 1
-                        ORDER BY p.DateHeure DESC";
-
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(query, conn))
-                    {
-                        DataTable dt = new DataTable();
-                        adapter.Fill(dt);
-                        gvRecentPointages.DataSource = dt;
-                        gvRecentPointages.DataBind();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError("Erreur lors du chargement des pointages: " + ex.Message);
-            }
-        }
-
-        // ... [Keep all other existing methods like SearchEmployeeByMatricule, CreatePointage, etc.] ...
-
-        // Updated event handlers with PRG pattern
-        protected void btnQuickEntree_Click(object sender, EventArgs e)
-        {
-            if (QuickEmployeeId.HasValue)
-            {
-                if (CreatePointage(QuickEmployeeId.Value, "ENTREE"))
-                {
-                    RedirectWithMessage("Entrée enregistrée avec succès");
-                }
-                else
-                {
-                    RedirectWithMessage("Erreur lors de l'enregistrement de l'entrée", false);
-                }
-            }
-        }
-
-        protected void btnQuickSortie_Click(object sender, EventArgs e)
-        {
-            if (QuickEmployeeId.HasValue)
-            {
-                if (CreatePointage(QuickEmployeeId.Value, "SORTIE"))
-                {
-                    RedirectWithMessage("Sortie enregistrée avec succès");
-                }
-                else
-                {
-                    RedirectWithMessage("Erreur lors de l'enregistrement de la sortie", false);
-                }
-            }
-        }
-
-        protected void gvEmployeesPresent_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            HandleEmployeeRowCommand(e);
-        }
-
-        protected void gvEmployeesAbsent_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            HandleEmployeeRowCommand(e);
-        }
-
-        private void HandleEmployeeRowCommand(GridViewCommandEventArgs e)
-        {
-            int employeeId = Convert.ToInt32(e.CommandArgument);
-
-            switch (e.CommandName)
-            {
-                case "PointageEntree":
-                    if (CreatePointage(employeeId, "ENTREE", ddlPort.SelectedValue))
-                    {
-                        RedirectWithMessage("Entrée enregistrée avec succès");
-                    }
-                    else
-                    {
-                        RedirectWithMessage("Erreur lors de l'enregistrement de l'entrée", false);
-                    }
-                    break;
-
-                case "PointageSortie":
-                    if (CreatePointage(employeeId, "SORTIE", ddlPort.SelectedValue))
-                    {
-                        RedirectWithMessage("Sortie enregistrée avec succès");
-                    }
-                    else
-                    {
-                        RedirectWithMessage("Erreur lors de l'enregistrement de la sortie", false);
-                    }
-                    break;
-
-                case "CustomPointage":
-                    ShowCustomPointagePanel(employeeId);
-                    break;
-            }
-        }
-
-        protected void btnSaveCustom_Click(object sender, EventArgs e)
-        {
-            if (CustomEmployeeId.HasValue)
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(txtCustomDate.Text) || string.IsNullOrEmpty(txtCustomTime.Text))
-                    {
-                        RedirectWithMessage("Veuillez saisir la date et l'heure", false);
-                        return;
-                    }
-
-                    DateTime customDate = DateTime.Parse(txtCustomDate.Text);
-                    TimeSpan customTime = TimeSpan.Parse(txtCustomTime.Text);
-                    DateTime customDateTime = customDate.Date.Add(customTime);
-
-                    if (customDateTime > DateTime.Now)
-                    {
-                        RedirectWithMessage("La date/heure ne peut pas être dans le futur", false);
-                        return;
-                    }
-
-                    if (customDateTime < DateTime.Now.AddDays(-30))
-                    {
-                        RedirectWithMessage("La date/heure ne peut pas être antérieure à 30 jours", false);
-                        return;
-                    }
-
-                    string typePointage = ddlCustomType.SelectedValue;
-                    string portName = ddlPort.SelectedValue;
-
-                    if (string.IsNullOrEmpty(portName))
-                    {
-                        portName = GetEmployeeAssignedPort(CustomEmployeeId.Value);
-                    }
-
-                    string validationError = ValidatePointageSequenceWithDateTime(CustomEmployeeId.Value, typePointage, customDateTime);
-                    if (!string.IsNullOrEmpty(validationError))
-                    {
-                        RedirectWithMessage(validationError, false);
-                        return;
-                    }
-
-                    if (CreatePointageWithCustomTime(CustomEmployeeId.Value, typePointage, portName, customDateTime))
-                    {
-                        RedirectWithMessage($"Pointage {typePointage} enregistré avec succès pour {customDateTime:dd/MM/yyyy HH:mm}");
-                    }
-                    else
-                    {
-                        RedirectWithMessage("Erreur lors de l'enregistrement du pointage personnalisé", false);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    RedirectWithMessage("Erreur lors de l'enregistrement: " + ex.Message, false);
-                }
-            }
-        }
-
-        // ... [Keep all other existing methods unchanged] ...
-
-        protected void ddlPort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadEmployeesForPort();
-        }
-
-        protected void txtDatePointage_TextChanged(object sender, EventArgs e)
-        {
-            LoadEmployeesForPort();
-        }
-
-        protected void btnSearchEmployee_Click(object sender, EventArgs e)
-        {
-            SearchEmployeeByMatricule();
-        }
-
-        protected void btnCancelCustom_Click(object sender, EventArgs e)
-        {
-            HideCustomPointagePanel();
-        }
-
-        protected void gvRecentPointages_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "AnnulerPointage")
-            {
-                try
-                {
-                    int pointageId = Convert.ToInt32(e.CommandArgument);
-                    CancelPointage(pointageId);
-                    RedirectWithMessage("Pointage annulé avec succès");
-                }
-                catch (Exception ex)
-                {
-                    RedirectWithMessage("Erreur lors de l'annulation: " + ex.Message, false);
-                }
-            }
-        }
-
-        protected void gvRecentPointages_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            gvRecentPointages.EditIndex = e.NewEditIndex;
-            LoadRecentPointages();
-        }
-
-        protected void gvRecentPointages_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            try
-            {
-                int pointageId = Convert.ToInt32(gvRecentPointages.DataKeys[e.RowIndex].Value);
-                TextBox txtEditDate = (TextBox)gvRecentPointages.Rows[e.RowIndex].FindControl("txtEditDate");
-                TextBox txtEditTime = (TextBox)gvRecentPointages.Rows[e.RowIndex].FindControl("txtEditTime");
-
-                if (txtEditDate != null && txtEditTime != null)
-                {
-                    DateTime newDate = DateTime.Parse(txtEditDate.Text);
-                    TimeSpan newTime = TimeSpan.Parse(txtEditTime.Text);
-                    DateTime newDateTime = newDate.Date.Add(newTime);
-
-                    if (newDateTime > DateTime.Now)
-                    {
-                        RedirectWithMessage("La date/heure ne peut pas être dans le futur", false);
-                        return;
-                    }
-
-                    if (newDateTime < DateTime.Now.AddDays(-30))
-                    {
-                        RedirectWithMessage("La date/heure ne peut pas être antérieure à 30 jours", false);
-                        return;
-                    }
-
-                    UpdatePointageDateTime(pointageId, newDateTime);
-                    RedirectWithMessage("Date/heure du pointage mise à jour avec succès");
-                }
-            }
-            catch (Exception ex)
-            {
-                RedirectWithMessage("Erreur lors de la mise à jour: " + ex.Message, false);
-            }
-        }
-
-        protected void gvRecentPointages_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            gvRecentPointages.EditIndex = -1;
-            LoadRecentPointages();
-        }
-
-        protected void btnRefreshEmployees_Click(object sender, EventArgs e)
-        {
-            LoadEmployeesForPort();
-        }
-
-        protected void btnRefreshPointages_Click(object sender, EventArgs e)
-        {
-            LoadRecentPointages();
-        }
-
-        // Keep all other existing helper methods...
-        private int GetCurrentUserId()
-        {
-            return Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 154;
-        }
-
-        private void ShowSuccess(string message)
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Success", $"showToast('success', '{message}');", true);
-        }
-
-        private void ShowError(string message)
-        {
-            ClientScript.RegisterStartupScript(this.GetType(), "Error", $"showToast('error', '{message}');", true);
-        }
-        // Add these methods to your PointageEmployesPorts.aspx.cs file
-
         private void SearchEmployeeByMatricule()
         {
             if (string.IsNullOrEmpty(txtMatricule.Text.Trim()))
@@ -731,35 +617,37 @@ namespace APPLICATION_RH.pointagfix
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = @"
-                SELECT 
-                    e.IdEmploye,
-                    e.Matricule,
-                    e.Nom + ' ' + e.Prenom AS NomComplet,
-                    ISNULL(dernierPointage.TypePointage, 'SORTIE') AS StatutActuel,
-                    ep.NomPort
-                FROM EMPLOYE e
-                LEFT JOIN EMPLOYE_PORT ep ON e.IdEmploye = ep.IdEmploye AND ep.is_deleted = 0
-                LEFT JOIN (
-                    SELECT 
-                        p1.IdEmploye,
-                        p1.TypePointage,
-                        p1.DateHeure
-                    FROM EMPLOYE_POINTAGE p1
-                    INNER JOIN (
-                        SELECT IdEmploye, MAX(DateHeure) as MaxDate
-                        FROM EMPLOYE_POINTAGE 
-                        WHERE is_deleted = 0
-                        GROUP BY IdEmploye
-                    ) p2 ON p1.IdEmploye = p2.IdEmploye AND p1.DateHeure = p2.MaxDate
-                    WHERE p1.is_deleted = 0
-                ) dernierPointage ON e.IdEmploye = dernierPointage.IdEmploye
-                WHERE (e.Nom LIKE @SearchTerm OR e.Prenom LIKE @SearchTerm OR (e.Nom + ' ' + e.Prenom) LIKE @SearchTerm)
-                AND e.is_deleted = 0 
-                AND e.DateSortie IS NULL";
+                        SELECT 
+                            e.IdEmploye,
+                            e.Matricule,
+                            e.Nom + ' ' + e.Prenom AS NomComplet,
+                            ISNULL(dernierPointage.TypePointage, 'SORTIE') AS StatutActuel,
+                            ep.NomPort
+                        FROM EMPLOYE e
+                        LEFT JOIN EMPLOYE_PORT ep ON e.IdEmploye = ep.IdEmploye AND ep.is_deleted = 0
+                        LEFT JOIN (
+                            SELECT 
+                                p1.IdEmploye,
+                                p1.TypePointage,
+                                p1.DateHeure
+                            FROM EMPLOYE_POINTAGE p1
+                            INNER JOIN (
+                                SELECT IdEmploye, MAX(DateHeure) as MaxDate
+                                FROM EMPLOYE_POINTAGE 
+                                WHERE CAST(DateHeure AS DATE) <= @DateSelected
+                                AND is_deleted = 0
+                                GROUP BY IdEmploye
+                            ) p2 ON p1.IdEmploye = p2.IdEmploye AND p1.DateHeure = p2.MaxDate
+                            WHERE p1.is_deleted = 0
+                        ) dernierPointage ON e.IdEmploye = dernierPointage.IdEmploye
+                        WHERE (e.Nom LIKE @SearchTerm OR e.Prenom LIKE @SearchTerm OR (e.Nom + ' ' + e.Prenom) LIKE @SearchTerm)
+                        AND e.is_deleted = 0 
+                        AND e.DateSortie IS NULL";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@SearchTerm", "%" + txtMatricule.Text.Trim() + "%");
+                        cmd.Parameters.AddWithValue("@DateSelected", PointageDate);
                         conn.Open();
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -797,158 +685,7 @@ namespace APPLICATION_RH.pointagfix
             }
         }
 
-        private void ShowCustomPointagePanel(int employeeId)
-        {
-            try
-            {
-                CustomEmployeeId = employeeId;
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "SELECT Matricule, Nom + ' ' + Prenom AS NomComplet FROM EMPLOYE WHERE IdEmploye = @IdEmploye";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
-                        conn.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                litCustomEmploye.Text = $"{reader["NomComplet"]} ({reader["Matricule"]})";
-                            }
-                        }
-                    }
-                }
-
-                txtCustomDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
-                txtCustomTime.Text = DateTime.Now.ToString("HH:mm");
-
-                string currentStatus = GetEmployeeCurrentStatus(employeeId);
-                ddlCustomType.SelectedValue = currentStatus == "ENTREE" ? "SORTIE" : "ENTREE";
-
-                pnlCustomTime.Visible = true;
-            }
-            catch (Exception ex)
-            {
-                ShowError("Erreur lors de l'affichage du panel: " + ex.Message);
-            }
-        }
-
-        private void HideCustomPointagePanel()
-        {
-            pnlCustomTime.Visible = false;
-            CustomEmployeeId = null;
-        }
-
-        private bool CreatePointageWithCustomTime(int employeeId, string typePointage, string portName, DateTime customDateTime)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"
-                INSERT INTO EMPLOYE_POINTAGE (IdEmploye, NomPort, TypePointage, DateHeure, AssignePar, DateCreation, is_deleted)
-                VALUES (@IdEmploye, @NomPort, @TypePointage, @DateHeure, @AssignePar, @DateCreation, 0)";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
-                        cmd.Parameters.AddWithValue("@NomPort", portName);
-                        cmd.Parameters.AddWithValue("@TypePointage", typePointage);
-                        cmd.Parameters.AddWithValue("@DateHeure", customDateTime);
-                        cmd.Parameters.AddWithValue("@AssignePar", GetCurrentUserId());
-                        cmd.Parameters.AddWithValue("@DateCreation", DateTime.Now);
-
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError("Erreur lors du pointage: " + ex.Message);
-                return false;
-            }
-        }
-
-        private string ValidatePointageSequenceWithDateTime(int employeeId, string typePointage, DateTime customDateTime)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"
-                SELECT TOP 1 TypePointage 
-                FROM EMPLOYE_POINTAGE 
-                WHERE IdEmploye = @IdEmploye 
-                AND DateHeure < @CustomDateTime
-                AND is_deleted = 0 
-                ORDER BY DateHeure DESC";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
-                        cmd.Parameters.AddWithValue("@CustomDateTime", customDateTime);
-                        conn.Open();
-
-                        object result = cmd.ExecuteScalar();
-                        string dernierType = result?.ToString();
-
-                        if (typePointage == "ENTREE")
-                        {
-                            if (!string.IsNullOrEmpty(dernierType) && dernierType == "ENTREE")
-                            {
-                                return "Employé déjà en ENTREE. Une SORTIE est requise avant une nouvelle ENTREE.";
-                            }
-                        }
-                        else if (typePointage == "SORTIE")
-                        {
-                            if (string.IsNullOrEmpty(dernierType) || dernierType == "SORTIE")
-                            {
-                                return "Employé déjà en SORTIE ou aucune ENTREE enregistrée. Une ENTREE est requise avant une SORTIE.";
-                            }
-                        }
-
-                        return "";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return "Erreur lors de la validation: " + ex.Message;
-            }
-        }
-
-        private void UpdatePointageDateTime(int pointageId, DateTime newDateTime)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"
-                UPDATE EMPLOYE_POINTAGE 
-                SET DateHeure = @DateHeure, DateModification = @DateModification 
-                WHERE IdPointage = @IdPointage";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@IdPointage", pointageId);
-                        cmd.Parameters.AddWithValue("@DateHeure", newDateTime);
-                        cmd.Parameters.AddWithValue("@DateModification", DateTime.Now);
-
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError("Erreur lors de la mise à jour: " + ex.Message);
-            }
-        }
-
-        private bool CreatePointage(int employeeId, string typePointage, string portName = null)
+        private bool CreatePointage(int employeeId, string typePointage, string portName = null, string customTime = null)
         {
             try
             {
@@ -969,6 +706,41 @@ namespace APPLICATION_RH.pointagfix
                     return false;
                 }
 
+                // Get the time from input or use the passed customTime
+                string timeToUse = customTime ?? txtPointageTime.Text;
+
+                // Validate time format
+                if (string.IsNullOrEmpty(timeToUse))
+                {
+                    ShowError("Veuillez spécifier une heure de pointage");
+                    return false;
+                }
+
+                // Parse the time
+                TimeSpan parsedTime;
+                if (!TimeSpan.TryParse(timeToUse, out parsedTime))
+                {
+                    ShowError("Format d'heure invalide. Utilisez HH:mm");
+                    return false;
+                }
+
+                // Validate selected date
+                DateTime selectedDate = PointageDate;
+                if (!ValidatePointageDate(selectedDate))
+                {
+                    return false;
+                }
+
+                // Combine selected date with the specified time
+                DateTime pointageDateTime = selectedDate.Add(parsedTime);
+
+                // Validate that the date/time is not in the future (only if selected date is today)
+                if (selectedDate == DateTime.Now.Date && pointageDateTime > DateTime.Now)
+                {
+                    ShowError("L'heure de pointage ne peut pas être dans le futur");
+                    return false;
+                }
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = @"
@@ -980,12 +752,16 @@ namespace APPLICATION_RH.pointagfix
                         cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
                         cmd.Parameters.AddWithValue("@NomPort", portName);
                         cmd.Parameters.AddWithValue("@TypePointage", typePointage);
-                        cmd.Parameters.AddWithValue("@DateHeure", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@DateHeure", pointageDateTime); // Use the selected date + time
                         cmd.Parameters.AddWithValue("@AssignePar", GetCurrentUserId());
                         cmd.Parameters.AddWithValue("@DateCreation", DateTime.Now);
 
                         conn.Open();
                         cmd.ExecuteNonQuery();
+
+                        // Save the time for next use
+                        PointageTime = timeToUse;
+
                         return true;
                     }
                 }
@@ -997,6 +773,122 @@ namespace APPLICATION_RH.pointagfix
             }
         }
 
+        private bool ValidatePointageDate(DateTime selectedDate)
+        {
+            DateTime today = DateTime.Now.Date;
+
+            // Allow dates up to 30 days in the past
+            if (selectedDate < today.AddDays(-30))
+            {
+                ShowError("La date de pointage ne peut pas être antérieure à 30 jours");
+                return false;
+            }
+
+            // Allow dates up to 7 days in the future (for planned entries)
+            if (selectedDate > today.AddDays(7))
+            {
+                ShowError("La date de pointage ne peut pas être supérieure à 7 jours dans le futur");
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool HasEntryOnDate(int employeeId, DateTime date)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = @"
+                        SELECT COUNT(*)
+                        FROM EMPLOYE_POINTAGE
+                        WHERE IdEmploye = @IdEmploye
+                        AND CAST(DateHeure AS DATE) = @Date
+                        AND TypePointage = 'ENTREE'
+                        AND is_deleted = 0";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
+                        cmd.Parameters.AddWithValue("@Date", date.Date);
+                        conn.Open();
+
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool CreatePreviousDayEntryExit(int employeeId, string portName)
+        {
+            try
+            {
+                DateTime previousDay = PointageDate.AddDays(-1);
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            // Create ENTREE at 00:00 on previous day
+                            DateTime entryDateTime = previousDay.Date;
+                            string entryQuery = @"
+                                INSERT INTO EMPLOYE_POINTAGE (IdEmploye, NomPort, TypePointage, DateHeure, AssignePar, DateCreation, is_deleted)
+                                VALUES (@IdEmploye, @NomPort, @TypePointage, @DateHeure, @AssignePar, @DateCreation, 0)";
+
+                            using (SqlCommand entryCmd = new SqlCommand(entryQuery, conn, transaction))
+                            {
+                                entryCmd.Parameters.AddWithValue("@IdEmploye", employeeId);
+                                entryCmd.Parameters.AddWithValue("@NomPort", portName);
+                                entryCmd.Parameters.AddWithValue("@TypePointage", "ENTREE");
+                                entryCmd.Parameters.AddWithValue("@DateHeure", entryDateTime);
+                                entryCmd.Parameters.AddWithValue("@AssignePar", GetCurrentUserId());
+                                entryCmd.Parameters.AddWithValue("@DateCreation", DateTime.Now);
+                                entryCmd.ExecuteNonQuery();
+                            }
+
+                            // Create SORTIE at 11:59 on previous day
+                            DateTime exitDateTime = previousDay.Date.AddHours(11).AddMinutes(59);
+                            string exitQuery = @"
+                                INSERT INTO EMPLOYE_POINTAGE (IdEmploye, NomPort, TypePointage, DateHeure, AssignePar, DateCreation, is_deleted)
+                                VALUES (@IdEmploye, @NomPort, @TypePointage, @DateHeure, @AssignePar, @DateCreation, 0)";
+
+                            using (SqlCommand exitCmd = new SqlCommand(exitQuery, conn, transaction))
+                            {
+                                exitCmd.Parameters.AddWithValue("@IdEmploye", employeeId);
+                                exitCmd.Parameters.AddWithValue("@NomPort", portName);
+                                exitCmd.Parameters.AddWithValue("@TypePointage", "SORTIE");
+                                exitCmd.Parameters.AddWithValue("@DateHeure", exitDateTime);
+                                exitCmd.Parameters.AddWithValue("@AssignePar", GetCurrentUserId());
+                                exitCmd.Parameters.AddWithValue("@DateCreation", DateTime.Now);
+                                exitCmd.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
+                            return true;
+                        }
+                        catch
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private string ValidatePointageSequence(int employeeId, string typePointage)
         {
             try
@@ -1004,15 +896,17 @@ namespace APPLICATION_RH.pointagfix
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = @"
-                SELECT TOP 1 TypePointage 
-                FROM EMPLOYE_POINTAGE 
-                WHERE IdEmploye = @IdEmploye 
-                AND is_deleted = 0 
-                ORDER BY DateHeure DESC";
+                        SELECT TOP 1 TypePointage
+                        FROM EMPLOYE_POINTAGE
+                        WHERE IdEmploye = @IdEmploye
+                        AND CAST(DateHeure AS DATE) <= @DateSelected
+                        AND is_deleted = 0
+                        ORDER BY DateHeure DESC";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
+                        cmd.Parameters.AddWithValue("@DateSelected", PointageDate);
                         conn.Open();
 
                         object result = cmd.ExecuteScalar();
@@ -1027,9 +921,33 @@ namespace APPLICATION_RH.pointagfix
                         }
                         else if (typePointage == "SORTIE")
                         {
-                            if (string.IsNullOrEmpty(dernierType) || dernierType == "SORTIE")
+                            // Check if there's an entry on the same day
+                            if (!HasEntryOnDate(employeeId, PointageDate))
                             {
-                                return "Employé déjà en SORTIE ou aucune ENTREE enregistrée. Une ENTREE est requise avant une SORTIE.";
+                                // No entry on current day, create previous day entry/exit
+                                string portName = GetEmployeeAssignedPort(employeeId);
+                                if (string.IsNullOrEmpty(portName))
+                                {
+                                    return "Impossible de créer l'entrée automatique: employé non assigné à un port";
+                                }
+
+                                if (CreatePreviousDayEntryExit(employeeId, portName))
+                                {
+                                    // Log the automatic creation for audit purposes
+                                    System.Diagnostics.Debug.WriteLine($"Entrée/sortie automatique créée pour l'employé {employeeId} le {PointageDate.AddDays(-1):dd/MM/yyyy}");
+                                }
+                                else
+                                {
+                                    return "Erreur lors de la création automatique de l'entrée/sortie du jour précédent";
+                                }
+                            }
+                            else
+                            {
+                                // Standard validation for same-day exit
+                                if (string.IsNullOrEmpty(dernierType) || dernierType == "SORTIE")
+                                {
+                                    return "Employé déjà en SORTIE ou aucune ENTREE enregistrée. Une ENTREE est requise avant une SORTIE.";
+                                }
                             }
                         }
 
@@ -1040,35 +958,6 @@ namespace APPLICATION_RH.pointagfix
             catch (Exception ex)
             {
                 return "Erreur lors de la validation: " + ex.Message;
-            }
-        }
-
-        private string GetEmployeeCurrentStatus(int employeeId)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"
-                SELECT TOP 1 TypePointage 
-                FROM EMPLOYE_POINTAGE 
-                WHERE IdEmploye = @IdEmploye 
-                AND is_deleted = 0 
-                ORDER BY DateHeure DESC";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@IdEmploye", employeeId);
-                        conn.Open();
-
-                        object result = cmd.ExecuteScalar();
-                        return result?.ToString() ?? "SORTIE";
-                    }
-                }
-            }
-            catch
-            {
-                return "SORTIE";
             }
         }
 
@@ -1093,32 +982,182 @@ namespace APPLICATION_RH.pointagfix
             }
         }
 
-        private void CancelPointage(int pointageId)
+        // Event Handlers
+        protected void btnSetToday_Click(object sender, EventArgs e)
         {
-            try
+            txtPointageDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            PointageDate = DateTime.Now.Date;
+            UpdateDateStatusIndicator();
+
+            // Reload data for today
+            if (!string.IsNullOrEmpty(ddlPort.SelectedValue))
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                LoadEmployeesForPort();
+            }
+
+            ShowSuccess("Date mise à jour: Aujourd'hui");
+        }
+
+        protected void txtPointageDate_TextChanged(object sender, EventArgs e)
+        {
+            if (DateTime.TryParse(txtPointageDate.Text, out DateTime selectedDate))
+            {
+                PointageDate = selectedDate.Date;
+                UpdateDateStatusIndicator();
+
+                // Reload data for the new date
+                if (!string.IsNullOrEmpty(ddlPort.SelectedValue))
                 {
-                    string query = @"
-                UPDATE EMPLOYE_POINTAGE 
-                SET is_deleted = 1, DateModification = @DateModification 
-                WHERE IdPointage = @IdPointage";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@IdPointage", pointageId);
-                        cmd.Parameters.AddWithValue("@DateModification", DateTime.Now);
-
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                    }
+                    LoadEmployeesForPort();
                 }
             }
-            catch (Exception ex)
+        }
+
+        protected void btnSetCurrentTime_Click(object sender, EventArgs e)
+        {
+            txtPointageTime.Text = DateTime.Now.ToString("HH:mm");
+            PointageTime = txtPointageTime.Text;
+            ShowSuccess($"Heure mise à jour: {txtPointageTime.Text}");
+        }
+
+        protected void btnQuickEntree_Click(object sender, EventArgs e)
+        {
+            if (QuickEmployeeId.HasValue)
             {
-                ShowError("Erreur lors de l'annulation: " + ex.Message);
+                // Pass the time from the input
+                if (CreatePointage(QuickEmployeeId.Value, "ENTREE", null, txtPointageTime.Text))
+                {
+                    RedirectWithMessage($"Entrée enregistrée avec succès le {PointageDate.ToString("dd/MM/yyyy")} à {txtPointageTime.Text}");
+                }
+                else
+                {
+                    RedirectWithMessage("Erreur lors de l'enregistrement de l'entrée", false);
+                }
             }
         }
-        // ... [Include all other existing methods like CreatePointage, ValidatePointageSequence, etc.] ...
+
+        protected void btnQuickSortie_Click(object sender, EventArgs e)
+        {
+            if (QuickEmployeeId.HasValue)
+            {
+                // Pass the time from the input
+                if (CreatePointage(QuickEmployeeId.Value, "SORTIE", null, txtPointageTime.Text))
+                {
+                    RedirectWithMessage($"Sortie enregistrée avec succès le {PointageDate.ToString("dd/MM/yyyy")} à {txtPointageTime.Text}");
+                }
+                else
+                {
+                    RedirectWithMessage("Erreur lors de l'enregistrement de la sortie", false);
+                }
+            }
+        }
+
+        private void HandleEmployeeRowCommand(GridViewCommandEventArgs e)
+        {
+            int employeeId = Convert.ToInt32(e.CommandArgument);
+
+            switch (e.CommandName)
+            {
+                case "PointageEntree":
+                    if (CreatePointage(employeeId, "ENTREE", ddlPort.SelectedValue, txtPointageTime.Text))
+                    {
+                        RedirectWithMessage($"Entrée enregistrée avec succès le {PointageDate.ToString("dd/MM/yyyy")} à {txtPointageTime.Text}");
+                    }
+                    else
+                    {
+                        RedirectWithMessage("Erreur lors de l'enregistrement de l'entrée", false);
+                    }
+                    break;
+
+                case "PointageSortie":
+                    if (CreatePointage(employeeId, "SORTIE", ddlPort.SelectedValue, txtPointageTime.Text))
+                    {
+                        RedirectWithMessage($"Sortie enregistrée avec succès le {PointageDate.ToString("dd/MM/yyyy")} à {txtPointageTime.Text}");
+                    }
+                    else
+                    {
+                        RedirectWithMessage("Erreur lors de l'enregistrement de la sortie", false);
+                    }
+                    break;
+            }
+        }
+
+        protected void gvEmployeesPresent_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            HandleEmployeeRowCommand(e);
+        }
+
+        protected void gvEmployeesAbsent_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            HandleEmployeeRowCommand(e);
+        }
+
+        protected void ddlPort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadEmployeesForPort();
+        }
+
+        protected void btnSearchEmployee_Click(object sender, EventArgs e)
+        {
+            SearchEmployeeByMatricule();
+        }
+
+        protected void btnRefreshEmployees_Click(object sender, EventArgs e)
+        {
+            LoadEmployeesForPort();
+        }
+
+        private int GetCurrentUserId()
+        {
+            if (Session["EmployeId"] == null)
+            {
+                Session.Clear();
+                Response.Redirect("~/connexion.aspx");
+                return 0;
+            }
+
+            return Convert.ToInt32(Session["EmployeId"]);
+        }
+
+        private void ShowSuccess(string message)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Success", $"showToast('success', '{message}');", true);
+        }
+
+        private void ShowError(string message)
+        {
+            ClientScript.RegisterStartupScript(this.GetType(), "Error", $"showToast('error', '{message}');", true);
+        }
+
+        // Helper method for formatting date-time in GridView
+        protected string FormatDateTime(object dateTimeValue)
+        {
+            if (dateTimeValue == null || dateTimeValue == DBNull.Value)
+                return "<small class='text-muted'>Aucun pointage</small>";
+
+            string dateTimeStr = dateTimeValue.ToString();
+            if (string.IsNullOrEmpty(dateTimeStr) || dateTimeStr == "Aucun pointage")
+                return "<small class='text-muted'>Aucun pointage</small>";
+
+            // Try to parse the formatted date-time string
+            if (DateTime.TryParseExact(dateTimeStr, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
+            {
+                string dateStr = parsedDateTime.ToString("dd/MM/yyyy");
+                string timeStr = parsedDateTime.ToString("HH:mm");
+
+                // Check if it's today to highlight differently
+                if (parsedDateTime.Date == DateTime.Now.Date)
+                {
+                    return $"<small class='datetime-display'><span class='date-part text-success'>Aujourd'hui</span><span class='time-part'>{timeStr}</span></small>";
+                }
+                else
+                {
+                    return $"<small class='datetime-display'><span class='date-part'>{dateStr}</span><span class='time-part'>{timeStr}</span></small>";
+                }
+            }
+
+            // Fallback to original value if parsing fails
+            return $"<small class='text-muted'>{dateTimeStr}</small>";
+        }
     }
 }

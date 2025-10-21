@@ -1,0 +1,387 @@
+╔═══════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                        GESTION DES JOURS FÉRIÉS ET JOURS SPÉCIAUX                                 ║
+║                                                                                                    ║
+║  Dashboard > Congés > Jours Fériés                                                                ║
+╚═══════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    STATISTIQUES (4 CARTES)                                        │
+├───────────────┬───────────────┬───────────────┬──────────────────────────────────────────────────┤
+│   🔴 JOURS    │   🟡 JOURS    │   🔵 À VENIR  │      🟢 TOTAL REPOS                              │
+│    FÉRIÉS     │   SPÉCIAUX    │               │                                                  │
+│      9        │      0        │      5        │           9                                      │
+│   (2025)      │               │               │                                                  │
+└───────────────┴───────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  ➕ AJOUTER UN JOUR FÉRIÉ / JOUR SPÉCIAL                                                         │
+├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                    │
+│  Nom du Jour Férié / Spécial *        Type *            Payé *                                   │
+│  ┌──────────────────────────┐         ┌──────────────┐  ┌──────────────┐                        │
+│  │ Ex: Aid Al Fitr          │         │ Jour Férié ▼ │  │ Oui (Payé) ▼ │                        │
+│  └──────────────────────────┘         └──────────────┘  └──────────────┘                        │
+│                                                                                                    │
+│  Date *                      Récurrent                   Type de Récurrence                      │
+│  ┌──────────────────────┐   ○ Oui  ● Non                ┌───────────────────────┐               │
+│  │ 2025-05-01           │                                │ Annuel (même date)  ▼ │               │
+│  └──────────────────────┘                                └───────────────────────┘               │
+│                                                                                                    │
+│  Description                                                                                      │
+│  ┌────────────────────────────────────────────────────────────────────────────────────┐          │
+│  │ Description du jour férié...                                                       │          │
+│  └────────────────────────────────────────────────────────────────────────────────────┘          │
+│                                                                                                    │
+│  [ Enregistrer ]  [ Annuler ]                                                                    │
+│                                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                      FILTRES                                                      │
+├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                    │
+│           [ ◄ ]  [ 2025 ]  [ ► ]        [ Tous les Types ▼ ]      [ Tous ▼ ]                    │
+│           Navigation Année               Filtre Type                Filtre Statut                │
+│                                                                                                    │
+│  Légende:  🔴 Jour Férié    🟡 Jour Spécial    🟢 Récurrent                                      │
+│                                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  📅 LISTE DES JOURS FÉRIÉS ET SPÉCIAUX                                                           │
+├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                    │
+│ ┌──────────┬────────────────────────┬───────────┬──────┬──────────┬─────────────┬────────┬─────┐│
+│ │  DATE    │         NOM            │   TYPE    │ PAYÉ │ RÉCURRENT│ DESCRIPTION │ STATUT │ ACT ││
+│ ├──────────┼────────────────────────┼───────────┼──────┼──────────┼─────────────┼────────┼─────┤│
+│ │ 01/01/25 │ Nouvel An              │ 🔴 Jour   │ ✅   │ 🟢       │ Jour de     │ Passé  │ ✏️🗑️││
+│ │ mercredi │                        │  Férié    │ Oui  │ YEARLY   │ l'An...     │        │     ││
+│ ├──────────┼────────────────────────┼───────────┼──────┼──────────┼─────────────┼────────┼─────┤│
+│ │ 11/01/25 │ Manifeste de           │ 🔴 Jour   │ ✅   │ 🟢       │ Commémora-  │ Passé  │ ✏️🗑️││
+│ │ samedi   │ l'Indépendance         │  Férié    │ Oui  │ YEARLY   │ tion...     │        │     ││
+│ ├──────────┼────────────────────────┼───────────┼──────┼──────────┼─────────────┼────────┼─────┤│
+│ │ 01/05/25 │ Fête du Travail        │ 🔴 Jour   │ ✅   │ 🟢       │ Journée     │ À venir│ ✏️🗑️││
+│ │ jeudi    │                        │  Férié    │ Oui  │ YEARLY   │ Internatio  │ 3 jours│     ││
+│ ├──────────┼────────────────────────┼───────────┼──────┼──────────┼─────────────┼────────┼─────┤│
+│ │ 30/07/25 │ Fête du Trône          │ 🔴 Jour   │ ✅   │ 🟢       │ Anniversaire│ À venir│ ✏️🗑️││
+│ │ mercredi │                        │  Férié    │ Oui  │ YEARLY   │ du Roi...   │        │     ││
+│ ├──────────┼────────────────────────┼───────────┼──────┼──────────┼─────────────┼────────┼─────┤│
+│ │   ...    │         ...            │    ...    │ ...  │   ...    │     ...     │  ...   │ ... ││
+│ └──────────┴────────────────────────┴───────────┴──────┴──────────┴─────────────┴────────┴─────┘│
+│                                                                                                    │
+│ Affichage de 9 jours fériés                                                                      │
+│                                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  ✨ JOURS FÉRIÉS PRÉDÉFINIS (MAROC)                                                              │
+├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                                    │
+│  Cliquez pour ajouter automatiquement les jours fériés officiels du Maroc pour l'année           │
+│  sélectionnée:                                                                                    │
+│                                                                                                    │
+│  [ Ajouter Jours Fériés Officiels ]                                                              │
+│                                                                                                    │
+│  Inclut: Nouvel An, Fête du Travail, Fête du Trône, Marche Verte, Fête de l'Indépendance,       │
+│  Aid Al Fitr, Aid Al Adha, Jour de l'An Hégirien, Achoura, Mouled                               │
+│                                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+                                    DESCRIPTION DES ZONES
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+ZONE 1: HEADER
+───────────────
+• Titre de la page: "Gestion des Jours Fériés et Jours Spéciaux"
+• Breadcrumb: Dashboard > Congés > Jours Fériés
+• Design: Header blanc avec ombre légère
+
+ZONE 2: STATISTIQUES (4 cartes en ligne)
+────────────────────────────────────────
+Carte 1 - Jours Fériés (Dégradé Rose-Rouge)
+  • Icône: 📅
+  • Nombre: 9
+  • Label: "Jours Fériés (2025)"
+  • Couleur: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)
+
+Carte 2 - Jours Spéciaux (Dégradé Orange)
+  • Icône: ⭐
+  • Nombre: 0
+  • Label: "Jours Spéciaux"
+  • Couleur: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)
+
+Carte 3 - À Venir (Dégradé Bleu)
+  • Icône: 🔜
+  • Nombre: 5
+  • Label: "À Venir"
+  • Couleur: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)
+
+Carte 4 - Total Repos (Dégradé Vert)
+  • Icône: 🏖️
+  • Nombre: 9
+  • Label: "Total Jours Repos"
+  • Couleur: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)
+
+ZONE 3: FORMULAIRE D'AJOUT/MODIFICATION
+────────────────────────────────────────
+• Background: Bleu clair (#e7f3ff)
+• Border radius: 6px
+• Padding: 20px
+• Shadow: Ombre légère
+
+Champs:
+1. Nom (TextBox) - Largeur complète dans colonne 1
+2. Type (DropDownList) - Colonne 2
+   - Jour Férié (sélectionné par défaut)
+   - Jour Spécial
+3. Payé (DropDownList) - Colonne 3
+   - Oui (Payé) - sélectionné par défaut
+   - Non (Non Payé)
+4. Date (DatePicker) - Colonne 1
+5. Récurrent (RadioButtons) - Colonne 2
+   - Oui / Non (Non sélectionné par défaut)
+6. Type de Récurrence (DropDownList) - Colonne 3
+   - Visible uniquement si "Récurrent = Oui"
+   - Annuel (même date)
+   - Mensuel
+   - Personnalisé
+7. Description (TextArea) - Largeur complète, 2 lignes
+
+Boutons:
+• [ Enregistrer ] - Vert, icône ✅
+• [ Annuler ] - Gris, icône ❌
+
+ZONE 4: FILTRES
+────────────────
+• Background: Gris clair (#f8f9fa)
+• Border radius: 6px
+• Padding: 20px
+
+Sous-zones:
+1. Navigation Année (Centre)
+   - Bouton ◄ (Année précédente)
+   - Bouton 2025 (Année courante, style primaire)
+   - Bouton ► (Année suivante)
+   - Groupés ensemble avec ombre
+
+2. Filtre Type (Gauche)
+   - DropDownList: Tous / Jours Fériés / Jours Spéciaux
+   - Auto-postback activé
+
+3. Filtre Statut (Droite)
+   - DropDownList: Tous / Passés / À Venir / Aujourd'hui
+   - Auto-postback activé
+
+4. Légende (En bas)
+   - 3 items avec carrés de couleur:
+     🔴 Rouge = Jour Férié
+     🟡 Jaune = Jour Spécial
+     🟢 Vert = Récurrent
+
+ZONE 5: LISTE (GRIDVIEW)
+────────────────────────
+• Table responsive
+• Header sticky (reste en haut lors du scroll)
+• Hover effect sur les lignes
+
+Colonnes:
+1. DATE
+   - Ligne 1: Date formatée (01/01/25)
+   - Ligne 2: Jour de la semaine (mercredi)
+   - Font: Bold pour la date
+
+2. NOM
+   - Nom complet du jour férié
+   - Font: Regular
+
+3. TYPE
+   - Badge coloré:
+     🔴 "Jour Férié" (background rouge #dc3545)
+     🟡 "Jour Spécial" (background jaune #ffc107)
+
+4. PAYÉ
+   - Badge:
+     ✅ "Oui" (background vert)
+     ⚠️ "Non" (background orange)
+
+5. RÉCURRENT
+   - Badge:
+     🟢 "YEARLY" / "MONTHLY" (background info #17a2b8)
+     ⚫ "Non" (background gris)
+
+6. DESCRIPTION
+   - Texte tronqué si trop long
+   - Tooltip au survol
+
+7. STATUT
+   - Badge dynamique basé sur la date:
+     🟢 "Aujourd'hui" (vert)
+     ⚫ "Passé" (gris)
+     🟡 "Dans X jour(s)" (jaune si < 7 jours)
+     🔵 "À venir" (bleu si > 7 jours)
+
+8. ACTIONS
+   - Bouton ✏️ Modifier (bleu, icône crayon)
+   - Bouton 🗑️ Supprimer (rouge, icône poubelle)
+   - Alignement: Centre
+
+Empty State:
+• Icône: 📅 (grande, grise)
+• Texte: "Aucun jour férié trouvé pour cette période"
+• Sous-texte: "Utilisez le formulaire ci-dessus pour ajouter des jours fériés"
+
+ZONE 6: JOURS PRÉDÉFINIS
+─────────────────────────
+• Card avec header bleu info (#17a2b8)
+• Header: "✨ Jours Fériés Prédéfinis (Maroc)"
+• Body:
+  - Texte explicatif
+  - Bouton bleu "Ajouter Jours Fériés Officiels"
+  - Liste des jours inclus (petit texte gris)
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+                                    COMPORTEMENTS INTERACTIFS
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+1. AJOUT D'UN JOUR FÉRIÉ
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Utilisateur remplit le formulaire                        │
+   │ 2. Clic sur "Enregistrer"                                   │
+   │ 3. Validation côté client                                   │
+   │ 4. Postback vers serveur                                    │
+   │ 5. Validation côté serveur                                  │
+   │ 6. INSERT dans BD                                           │
+   │ 7. Rafraîchissement statistiques                            │
+   │ 8. Rafraîchissement GridView                                │
+   │ 9. Message de succès (alert)                                │
+   │ 10. Formulaire vidé                                         │
+   └─────────────────────────────────────────────────────────────┘
+
+2. MODIFICATION D'UN JOUR FÉRIÉ
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Clic sur icône ✏️ dans GridView                         │
+   │ 2. Scroll automatique vers formulaire                       │
+   │ 3. Formulaire pré-rempli avec données                       │
+   │ 4. Titre change: "Modifier Jour Férié..."                   │
+   │ 5. Bouton change: "Mettre à jour"                           │
+   │ 6. Utilisateur modifie                                      │
+   │ 7. Clic "Mettre à jour"                                     │
+   │ 8. UPDATE dans BD                                           │
+   │ 9. Rafraîchissements                                        │
+   │ 10. Message de succès                                       │
+   └─────────────────────────────────────────────────────────────┘
+
+3. SUPPRESSION D'UN JOUR FÉRIÉ
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Clic sur icône 🗑️                                       │
+   │ 2. Popup de confirmation JavaScript                         │
+   │    "Êtes-vous sûr de vouloir supprimer ce jour férié?"     │
+   │ 3. Si "OK": Postback                                        │
+   │ 4. UPDATE is_deleted = 1 (soft delete)                      │
+   │ 5. Rafraîchissements                                        │
+   │ 6. Message de succès                                        │
+   │ 7. Si "Annuler": Rien ne se passe                           │
+   └─────────────────────────────────────────────────────────────┘
+
+4. NAVIGATION PAR ANNÉE
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Clic sur ◄ ou ►                                          │
+   │ 2. Session["SelectedYear"] mise à jour                      │
+   │ 3. Postback                                                 │
+   │ 4. Bouton central mis à jour (ex: "2024")                   │
+   │ 5. Requête BD filtrée par nouvelle année                    │
+   │ 6. Statistiques recalculées                                 │
+   │ 7. GridView rafraîchi                                       │
+   └─────────────────────────────────────────────────────────────┘
+
+5. FILTRAGE
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Changement dans DropDownList (Type ou Statut)            │
+   │ 2. AutoPostBack = true déclenche postback                   │
+   │ 3. Requête BD modifiée avec clause WHERE                    │
+   │ 4. GridView rafraîchi avec résultats filtrés                │
+   └─────────────────────────────────────────────────────────────┘
+
+6. AJOUT JOURS PRÉDÉFINIS
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Clic "Ajouter Jours Fériés Officiels"                    │
+   │ 2. Loop sur 9 jours fériés fixes                            │
+   │ 3. Pour chaque jour:                                        │
+   │    - Vérifier si existe déjà                                │
+   │    - Si non: INSERT                                         │
+   │    - Incrémenter compteur                                   │
+   │ 4. Message: "X jour(s) férié(s) ajouté(s)"                  │
+   │    ou "Déjà présents"                                       │
+   │ 5. Rafraîchissements                                        │
+   └─────────────────────────────────────────────────────────────┘
+
+7. GESTION RÉCURRENCE
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Clic sur radio "Récurrent: Oui"                          │
+   │ 2. JavaScript affiche div "Type de Récurrence"              │
+   │ 3. DropDownList devient visible                             │
+   │ 4. Si "Non": div masquée                                    │
+   └─────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+                                    RESPONSIVE DESIGN
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+DESKTOP (> 992px)
+─────────────────
+• Statistiques: 4 cartes en ligne
+• Formulaire: 2-3 colonnes
+• Filtres: 3 éléments en ligne
+• Table: Toutes colonnes visibles
+
+TABLETTE (768px - 992px)
+────────────────────────
+• Statistiques: 2 cartes par ligne
+• Formulaire: 2 colonnes
+• Filtres: Stacked verticalement
+• Table: Scroll horizontal
+
+MOBILE (< 768px)
+────────────────
+• Statistiques: 1 carte par ligne
+• Formulaire: 1 colonne (full width)
+• Filtres: Stacked verticalement
+• Table: Scroll horizontal + colonnes prioritaires only
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+                                    PALETTE DE COULEURS
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+
+PRIMAIRES:
+• Bleu Primaire: #007bff
+• Vert Succès: #28a745
+• Rouge Danger: #dc3545
+• Jaune Avertissement: #ffc107
+• Info Bleu: #17a2b8
+
+SECONDAIRES:
+• Gris Clair: #f8f9fa
+• Gris Moyen: #6c757d
+• Gris Foncé: #343a40
+• Blanc: #ffffff
+
+DÉGRADÉS (Statistiques):
+• Rose-Rouge: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)
+• Orange: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)
+• Bleu Ciel: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)
+• Vert Menthe: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)
+
+ÉTATS:
+• Hover (lignes table): rgba(0,123,255,0.05)
+• Focus (inputs): #80bdff
+• Disabled: #e9ecef
+
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════
+FIN DU WIREFRAME
+═══════════════════════════════════════════════════════════════════════════════════════════════════
